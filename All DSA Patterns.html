@@ -1,0 +1,2445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CP Pattern Roadmap — Expert to CM</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2128;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #58a6ff;
+  --green: #3fb950;
+  --yellow: #d29922;
+  --red: #f85149;
+  --purple: #bc8cff;
+  --orange: #ffa657;
+  --cyan: #39d0d8;
+  --l1: #238636;
+  --l2: #1f6feb;
+  --l3: #8957e5;
+  --l4: #da3633;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.6; }
+
+/* HEADER */
+.header { background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1f2e 100%); border-bottom: 1px solid var(--border); padding: 24px 32px; position: sticky; top: 0; z-index: 100; }
+.header-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.logo { font-size: 22px; font-weight: 800; background: linear-gradient(90deg, #58a6ff, #bc8cff, #39d0d8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; }
+.tagline { color: var(--muted); font-size: 12px; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+.badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; border: 1px solid; }
+.badge-interview { background: rgba(63,185,80,.15); border-color: #3fb950; color: #3fb950; }
+.badge-cf { background: rgba(88,166,255,.15); border-color: #58a6ff; color: #58a6ff; }
+.badge-icpc { background: rgba(188,140,255,.15); border-color: #bc8cff; color: #bc8cff; }
+.controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.search-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 13px; width: 260px; outline: none; }
+.search-box:focus { border-color: var(--accent); }
+.search-box::placeholder { color: var(--muted); }
+select { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px; cursor: pointer; outline: none; }
+select:focus { border-color: var(--accent); }
+.btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 12px; cursor: pointer; transition: all .2s; font-weight: 600; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.active { background: var(--accent); color: #0d1117; border-color: var(--accent); }
+
+/* LEVEL TABS */
+.level-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); overflow-x: auto; }
+.level-tab { padding: 14px 24px; cursor: pointer; font-size: 13px; font-weight: 600; border-bottom: 3px solid transparent; white-space: nowrap; transition: all .2s; color: var(--muted); }
+.level-tab:hover { color: var(--text); }
+.level-tab.active { color: var(--text); }
+.level-tab[data-level="1"].active { border-color: var(--l1); color: #3fb950; }
+.level-tab[data-level="2"].active { border-color: var(--l2); color: #58a6ff; }
+.level-tab[data-level="3"].active { border-color: var(--l3); color: #bc8cff; }
+.level-tab[data-level="4"].active { border-color: var(--l4); color: #f85149; }
+.level-tab[data-level="all"].active { border-color: var(--cyan); color: var(--cyan); }
+.level-tab[data-level="roadmap"].active { border-color: var(--orange); color: var(--orange); }
+.level-tab[data-level="deps"].active { border-color: var(--yellow); color: var(--yellow); }
+
+/* MAIN */
+.main { display: flex; gap: 0; min-height: calc(100vh - 140px); }
+.sidebar { width: 260px; flex-shrink: 0; border-right: 1px solid var(--border); background: var(--surface); padding: 16px; overflow-y: auto; max-height: calc(100vh - 140px); position: sticky; top: 140px; }
+.sidebar-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+.sidebar-item { padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; color: var(--muted); transition: all .15s; display: flex; align-items: center; gap: 8px; }
+.sidebar-item:hover { background: var(--surface2); color: var(--text); }
+.sidebar-item.active { background: rgba(88,166,255,.15); color: var(--accent); }
+.sidebar-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* CONTENT */
+.content { flex: 1; padding: 24px; overflow-y: auto; max-height: calc(100vh - 140px); }
+.section-hidden { display: none; }
+
+/* PATTERN CARD */
+.pattern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; transition: border-color .2s; }
+.pattern-card:hover { border-color: #444d56; }
+.card-header { padding: 16px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+.card-header:hover { background: var(--surface2); }
+.pattern-num { font-size: 11px; color: var(--muted); font-family: var(--font-mono); min-width: 36px; }
+.pattern-name { font-size: 16px; font-weight: 700; flex: 1; }
+.card-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tag { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.tag-l1 { background: rgba(35,134,54,.2); color: #3fb950; border: 1px solid rgba(35,134,54,.4); }
+.tag-l2 { background: rgba(31,111,235,.2); color: #58a6ff; border: 1px solid rgba(31,111,235,.4); }
+.tag-l3 { background: rgba(137,87,229,.2); color: #bc8cff; border: 1px solid rgba(137,87,229,.4); }
+.tag-l4 { background: rgba(218,54,51,.2); color: #f85149; border: 1px solid rgba(218,54,51,.4); }
+.tag-interview { background: rgba(63,185,80,.15); color: #3fb950; }
+.tag-cf { background: rgba(88,166,255,.15); color: #58a6ff; }
+.tag-icpc { background: rgba(188,140,255,.15); color: #bc8cff; }
+.tag-hidden { background: rgba(255,166,87,.15); color: #ffa657; border: 1px solid rgba(255,166,87,.3); }
+.chevron { color: var(--muted); transition: transform .2s; font-size: 12px; }
+.chevron.open { transform: rotate(180deg); }
+.card-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border); }
+.card-body.open { display: block; }
+
+/* GRID INSIDE CARD */
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+@media (max-width: 900px) { .info-grid { grid-template-columns: 1fr; } }
+.info-block { background: var(--surface2); border-radius: 8px; padding: 14px; border: 1px solid var(--border); }
+.info-block.full { grid-column: 1 / -1; }
+.info-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.info-label .icon { font-size: 14px; }
+.info-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+.complexity { font-family: var(--font-mono); font-size: 13px; color: var(--cyan); font-weight: 600; }
+pre.code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-family: var(--font-mono); font-size: 12px; overflow-x: auto; color: #e6edf3; line-height: 1.6; white-space: pre; }
+.kw { color: #ff7b72; }
+.type { color: #79c0ff; }
+.str { color: #a5d6ff; }
+.num { color: #79c0ff; }
+.comment { color: #8b949e; }
+.fn { color: #d2a8ff; }
+.var { color: #ffa657; }
+ul.info-list { list-style: none; padding: 0; }
+ul.info-list li { padding: 4px 0; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(48,54,61,.5); }
+ul.info-list li:last-child { border-bottom: none; }
+ul.info-list li::before { content: "→ "; color: var(--accent); font-weight: 700; }
+.problem-link { color: var(--accent); text-decoration: none; font-size: 13px; display: block; padding: 3px 0; }
+.problem-link:hover { text-decoration: underline; }
+.mistake { color: var(--red); }
+.mistake::before { content: "✗ "; }
+.cf-range { font-family: var(--font-mono); color: var(--yellow); font-weight: 700; font-size: 15px; }
+
+/* LEVEL HEADER */
+.level-header { padding: 24px 0 16px; display: flex; align-items: center; gap: 16px; }
+.level-badge { padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 800; letter-spacing: 0.5px; }
+.level-badge-1 { background: rgba(35,134,54,.2); color: #3fb950; border: 2px solid #3fb950; }
+.level-badge-2 { background: rgba(31,111,235,.2); color: #58a6ff; border: 2px solid #58a6ff; }
+.level-badge-3 { background: rgba(137,87,229,.2); color: #bc8cff; border: 2px solid #bc8cff; }
+.level-badge-4 { background: rgba(218,54,51,.2); color: #f85149; border: 2px solid #f85149; }
+.level-desc { color: var(--muted); font-size: 13px; }
+
+/* ROADMAP */
+.roadmap { padding: 0; }
+.month-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+.month-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; }
+.month-num { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; }
+.month-body { padding: 20px 24px; }
+.month-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
+.pattern-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 600; }
+.goal-box { background: rgba(88,166,255,.08); border: 1px solid rgba(88,166,255,.3); border-radius: 8px; padding: 14px; margin-top: 14px; }
+.goal-title { color: var(--accent); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.tip-box { background: rgba(255,166,87,.08); border: 1px solid rgba(255,166,87,.3); border-radius: 8px; padding: 14px; margin-top: 10px; }
+.tip-title { color: var(--orange); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+
+/* DEP GRAPH */
+.dep-section { padding: 20px 0; }
+.dep-table { width: 100%; border-collapse: collapse; }
+.dep-table th { background: var(--surface2); padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.dep-table td { padding: 12px 16px; border-bottom: 1px solid rgba(48,54,61,.5); font-size: 13px; vertical-align: top; }
+.dep-tag { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; font-size: 11px; margin: 2px; color: var(--muted); }
+.dep-tag.required { border-color: var(--red); color: var(--red); background: rgba(248,81,73,.1); }
+.dep-tag.recommended { border-color: var(--yellow); color: var(--yellow); background: rgba(210,153,34,.1); }
+
+/* PRIORITY TABLE */
+.priority-table { width: 100%; border-collapse: collapse; }
+.priority-table th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.priority-table td { padding: 10px 14px; border-bottom: 1px solid rgba(48,54,61,.5); font-size: 13px; }
+.star { color: var(--yellow); }
+.dot-yes { color: var(--green); font-size: 18px; }
+.dot-no { color: var(--border); font-size: 18px; }
+
+/* HIDDEN PATTERNS */
+.hidden-section { background: var(--surface); border: 1px solid rgba(255,166,87,.3); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+.hidden-title { color: var(--orange); font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+/* TABS inside card */
+.inner-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin: 16px 0 0; }
+.inner-tab { padding: 8px 14px; cursor: pointer; font-size: 12px; font-weight: 600; border-bottom: 2px solid transparent; color: var(--muted); transition: all .15s; }
+.inner-tab:hover { color: var(--text); }
+.inner-tab.active { color: var(--accent); border-color: var(--accent); }
+.inner-panel { display: none; padding-top: 12px; }
+.inner-panel.active { display: block; }
+
+/* EMPTY STATE */
+.empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-icon { font-size: 48px; margin-bottom: 16px; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #444d56; }
+
+/* PATTERN COUNT */
+.count-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; font-size: 12px; color: var(--muted); margin-left: auto; }
+
+.section-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.section-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="logo">⚡ CP Pattern Roadmap</div>
+      <div class="tagline">800 → 1800+ Codeforces · Pattern-based, not topic-based</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-interview">🎯 Interview</span>
+      <span class="badge badge-cf">🔵 Codeforces</span>
+      <span class="badge badge-icpc">🏆 ICPC</span>
+    </div>
+  </div>
+  <div class="controls">
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍  Search patterns, techniques, problems..." oninput="filterPatterns()">
+    <select id="filterSelect" onchange="filterPatterns()">
+      <option value="all">All Tags</option>
+      <option value="interview">🎯 Must for Interview</option>
+      <option value="cf">🔵 Must for CF</option>
+      <option value="icpc">🏆 Must for ICPC</option>
+      <option value="hidden">🔮 Hidden Patterns</option>
+    </select>
+    <button class="btn" onclick="expandAll()">Expand All</button>
+    <button class="btn" onclick="collapseAll()">Collapse All</button>
+  </div>
+</div>
+
+<div class="level-tabs">
+  <div class="level-tab active" data-level="all" onclick="switchTab('all')">📋 All Patterns</div>
+  <div class="level-tab" data-level="1" onclick="switchTab('1')">🟢 L1 · Foundations</div>
+  <div class="level-tab" data-level="2" onclick="switchTab('2')">🔵 L2 · Intermediate</div>
+  <div class="level-tab" data-level="3" onclick="switchTab('3')">🟣 L3 · Advanced</div>
+  <div class="level-tab" data-level="4" onclick="switchTab('4')">🔴 L4 · Expert</div>
+  <div class="level-tab" data-level="roadmap" onclick="switchTab('roadmap')">🗓️ 6-Month Roadmap</div>
+  <div class="level-tab" data-level="deps" onclick="switchTab('deps')">🕸️ Dep Graph</div>
+</div>
+
+<div class="main">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-title">Quick Jump</div>
+    <div id="sidebarList"></div>
+  </div>
+
+  <div class="content" id="mainContent">
+    <!-- PATTERNS VIEW -->
+    <div id="patternsView">
+      <div id="patternsList"></div>
+      <div id="emptyState" class="empty section-hidden">
+        <div class="empty-icon">🔍</div>
+        <div>No patterns match your search</div>
+      </div>
+    </div>
+
+    <!-- ROADMAP VIEW -->
+    <div id="roadmapView" class="section-hidden roadmap">
+      <div class="section-title">6-Month CP Roadmap</div>
+      <div class="section-sub">From Codeforces 800 → 1800+ rating. ~2–3 hours/day, contest every week.</div>
+      <div id="roadmapContent"></div>
+    </div>
+
+    <!-- DEPS VIEW -->
+    <div id="depsView" class="section-hidden dep-section">
+      <div class="section-title">Dependency Graph</div>
+      <div class="section-sub">What you must learn before each pattern. Required = hard prerequisite. Recommended = helps a lot.</div>
+      <div id="depsContent"></div>
+      <div style="margin-top:32px">
+        <div class="section-title">Priority Matrix</div>
+        <div class="section-sub">Importance across different competitive programming tracks.</div>
+        <div id="priorityContent"></div>
+      </div>
+      <div style="margin-top:32px">
+        <div class="hidden-section">
+          <div class="hidden-title">🔮 Hidden Patterns (Not in Striver's Sheet)</div>
+          <div id="hiddenContent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PATTERNS = [
+// ======== LEVEL 1 ========
+{
+  id: 1, level: 1, name: "Simulation",
+  cfRange: "800–1200",
+  tags: ["interview"],
+  recognition: [
+    "Problem says 'simulate', 'perform operations', 'follow rules exactly'",
+    "Small n ≤ 1000, brute force is intentional",
+    "Grid/array manipulation with explicit steps",
+    "Asked to find final state after k steps"
+  ],
+  coreIdea: "Directly implement what the problem says. No trick—just careful coding. The challenge is handling edge cases and off-by-one errors, not algorithmic insight.",
+  complexity: "O(n) to O(n·k) depending on problem",
+  template: `<span class="comment">// Generic simulation loop</span>
+<span class="kw">for</span> (<span class="type">int</span> <span class="var">step</span> = <span class="num">0</span>; step < k; step++) {
+    <span class="kw">for</span> (<span class="type">int</span> <span class="var">i</span> = <span class="num">0</span>; i < n; i++) {
+        <span class="comment">// Apply transition rule to state[i]</span>
+        newState[i] = <span class="fn">applyRule</span>(state[i], state);
+    }
+    state = newState;
+}`,
+  beginner: "Codeforces 1A – Theatre Square: fill an n×m hall with 1×1 tiles, count minimum tiles needed",
+  intermediate: "CF 96B – Lucky Mask: simulate digit operations on a number sequence",
+  advanced: "CF 598E – Chocolate Bar: game simulation with memoization",
+  mistakes: [
+    "Modifying array while iterating (use copy/temp array)",
+    "Wrong index when wrapping around (use mod carefully)",
+    "Missing edge case: n=1, k=0, or empty input"
+  ],
+  similar: "Implementation (simulation + I/O parsing), BFS (simulating state transitions on graph)",
+  lc: ["874. Walking Robot Simulation", "54. Spiral Matrix", "59. Spiral Matrix II", "885. Spiral Matrix III", "289. Game of Life"],
+  cf: ["1A - Theatre Square", "4A - Watermelon", "71A - Way Too Long Words", "263A - Beautiful Matrix", "1352B - Same Parity Summands"],
+  gfg: ["Circular Tour Problem", "Snake and Ladder Problem", "N-Queen Problem via simulation"],
+  interview: true, cf_imp: true, icpc_imp: false, hidden: false
+},
+{
+  id: 2, level: 1, name: "Implementation",
+  cfRange: "800–1400",
+  tags: ["interview", "cf"],
+  recognition: [
+    "Long problem statement with many conditions",
+    "No obvious mathematical trick—just code it",
+    "String parsing, matrix rotation, calendar problems",
+    "Multiple cases with if-else branches"
+  ],
+  coreIdea: "Clean, fast, bug-free coding. The bottleneck is code organization, not algorithmic creativity. Break into helper functions. Test on small examples first.",
+  complexity: "Varies — usually O(n) or O(n²)",
+  template: `<span class="comment">// Template: parse → process → output</span>
+<span class="kw">public static void</span> <span class="fn">solve</span>(<span class="type">Scanner</span> <span class="var">sc</span>) {
+    <span class="type">int</span> <span class="var">n</span> = sc.nextInt();
+    <span class="type">int</span>[] <span class="var">a</span> = <span class="kw">new</span> <span class="type">int</span>[n];
+    <span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) a[i] = sc.nextInt();
+    
+    <span class="comment">// Separate into helper methods for clarity</span>
+    <span class="type">int</span> <span class="var">ans</span> = <span class="fn">process</span>(a, n);
+    System.out.println(ans);
+}`,
+  beginner: "CF 1A – Theatre Square",
+  intermediate: "CF 1196B – Odd Sum Segments: split array into k parts each with odd sum",
+  advanced: "CF 1574C – Slay the Dragon: find two elements differing by exactly 1 from a multiset",
+  mistakes: [
+    "Using BufferedReader but parsing incorrectly (use split carefully)",
+    "Integer overflow: use long when n ≤ 10^18",
+    "Printing extra newlines"
+  ],
+  similar: "Simulation (pure state changes), Ad hoc (clever observation needed)",
+  lc: ["6. Zigzag Conversion", "48. Rotate Image", "49. Group Anagrams", "68. Text Justification", "1419. Minimum Number of Frogs Croaking"],
+  cf: ["71A - Way Too Long Words", "1A - Theatre Square", "158B - Taxi", "263A - Beautiful Matrix", "1303B - National Project"],
+  gfg: ["Rotate a Matrix", "Print Matrix in Spiral Order", "Count Occurrences of Anagram"],
+  interview: true, cf_imp: true, icpc_imp: false, hidden: false
+},
+{
+  id: 3, level: 1, name: "Frequency Map",
+  cfRange: "800–1200",
+  tags: ["interview", "cf"],
+  recognition: [
+    "'Find element appearing exactly k times'",
+    "'Count occurrences'",
+    "Need to check duplicates or find majority element",
+    "Group elements by value"
+  ],
+  coreIdea: "Use HashMap<value, count> or array if values are bounded. First pass: build map. Second pass: answer queries. O(1) lookups replace O(n) linear search.",
+  complexity: "O(n) time, O(n) space",
+  template: `<span class="type">Map</span>&lt;<span class="type">Integer</span>, <span class="type">Integer</span>&gt; <span class="var">freq</span> = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span> <span class="var">x</span> : arr)
+    freq.<span class="fn">merge</span>(x, <span class="num">1</span>, <span class="type">Integer</span>::sum);
+
+<span class="comment">// Query: does value v appear exactly k times?</span>
+freq.<span class="fn">getOrDefault</span>(v, <span class="num">0</span>) == k;`,
+  beginner: "LeetCode 1 – Two Sum",
+  intermediate: "LeetCode 49 – Group Anagrams",
+  advanced: "CF 466C – Number of Ways: count triplets (i,j,k) such that sum of left = sum of right = total/3",
+  mistakes: [
+    "Using == for Integer comparison (use .equals() or unbox to int)",
+    "Not handling 0 count: getOrDefault(k, 0) vs get(k)",
+    "For char frequency: use int[256] array for O(1) vs HashMap"
+  ],
+  similar: "Frequency of Frequency (count of counts), Hashing (general purpose)",
+  lc: ["1. Two Sum", "49. Group Anagrams", "169. Majority Element", "242. Valid Anagram", "347. Top K Frequent Elements"],
+  cf: ["466C - Number of Ways", "1352B - Same Parity Summands", "4C - Registration System", "785B - Anton and Permutation", "1393D - Rarity and New Dress"],
+  gfg: ["Subarray with given XOR", "Largest subarray with 0 sum", "Count distinct elements in every window"],
+  interview: true, cf_imp: true, icpc_imp: false, hidden: false
+},
+{
+  id: 4, level: 1, name: "Frequency of Frequency",
+  cfRange: "900–1400",
+  tags: ["cf", "hidden"],
+  recognition: [
+    "'Make all elements equal with minimum deletions'",
+    "'Find minimum/maximum frequency after one operation'",
+    "Questions about the distribution of counts",
+    "Asking about what's the most/least common frequency"
+  ],
+  coreIdea: "Build freq[v] = count of value v. Then build freqOfFreq[c] = how many values appear exactly c times. Two-level counting unlocks O(1) answers to 'how many elements appear k times?'",
+  complexity: "O(n) build, O(1) query",
+  template: `<span class="type">int</span>[] <span class="var">freq</span> = <span class="kw">new</span> <span class="type">int</span>[<span class="num">100001</span>];
+<span class="kw">for</span> (<span class="type">int</span> <span class="var">x</span> : arr) freq[x]++;
+
+<span class="type">int</span>[] <span class="var">fof</span> = <span class="kw">new</span> <span class="type">int</span>[n + <span class="num">1</span>];
+<span class="kw">for</span> (<span class="type">int</span> <span class="var">v</span> : freq) <span class="kw">if</span> (v > <span class="num">0</span>) fof[v]++;
+
+<span class="comment">// fof[k] = number of distinct values appearing k times</span>`,
+  beginner: "CF 1257B – Magic Stick: can we make all elements equal by repeated doubling",
+  intermediate: "CF 1033C – Permutation Game: count elements with max frequency",
+  advanced: "CF 1156D – 0-1-2 MST: use frequency of frequency to count edges by weight",
+  mistakes: [
+    "Forgetting to iterate over map keys (not indices 0..n) for freq",
+    "Off-by-one in fof array size (needs n+1)",
+    "Not resetting fof after each test case"
+  ],
+  similar: "Frequency Map (one level down), Counting Sort (related idea)",
+  lc: ["594. Longest Harmonious Subsequence", "1207. Unique Number of Occurrences", "1002. Find Common Characters", "692. Top K Frequent Words", "451. Sort Characters By Frequency"],
+  cf: ["1257B - Magic Stick", "1033C - Permutation Game", "1375B - Make Array Good", "797C - Minimal string", "1234C - Pipes"],
+  gfg: ["Most frequent element in array", "Group shifted strings", "Number of elements with odd factors"],
+  interview: false, cf_imp: true, icpc_imp: false, hidden: true
+},
+{
+  id: 5, level: 1, name: "Prefix Sum",
+  cfRange: "800–1400",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "'Sum of subarray [l..r]' queries",
+    "Range sum, range average",
+    "Count elements in range",
+    "2D version: sum of submatrix"
+  ],
+  coreIdea: "Pre-compute prefix[i] = sum(a[0..i-1]). Range sum [l..r] = prefix[r+1] - prefix[l]. Build O(n), query O(1). Extend to 2D with prefix[i][j] = sum of top-left submatrix.",
+  complexity: "O(n) build, O(1) query",
+  template: `<span class="type">long</span>[] <span class="var">pre</span> = <span class="kw">new</span> <span class="type">long</span>[n + <span class="num">1</span>];
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) pre[i + <span class="num">1</span>] = pre[i] + a[i];
+
+<span class="comment">// Range sum [l, r] (0-indexed, inclusive)</span>
+<span class="type">long</span> <span class="var">rangeSum</span> = pre[r + <span class="num">1</span>] - pre[l];
+
+<span class="comment">// 2D prefix sum</span>
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i <= n; i++)
+    <span class="kw">for</span> (<span class="type">int</span> j = <span class="num">1</span>; j <= m; j++)
+        p[i][j] = g[i][j] + p[i-<span class="num">1</span>][j] + p[i][j-<span class="num">1</span>] - p[i-<span class="num">1</span>][j-<span class="num">1</span>];`,
+  beginner: "LeetCode 303 – Range Sum Query",
+  intermediate: "LeetCode 560 – Subarray Sum Equals K (prefix sum + hashmap)",
+  advanced: "CF 1391C – Cyclic Permutations: count permutations with no cyclic shifts",
+  mistakes: [
+    "1-indexed vs 0-indexed confusion",
+    "Not using long for large sums",
+    "2D inclusion-exclusion sign error"
+  ],
+  similar: "Difference Array (inverse operation), Segment Tree (dynamic updates needed)",
+  lc: ["303. Range Sum Query - Immutable", "304. Range Sum Query 2D", "560. Subarray Sum Equals K", "525. Contiguous Array", "974. Subarray Sums Divisible by K"],
+  cf: ["816A - Karen and Morning", "1217C - Misleading Numbering", "1450B - Balls of Steel", "1303B - National Project", "837D - Round Subset"],
+  gfg: ["Equilibrium index of an array", "Maximum subarray size such that elements are consecutive", "Count of subarrays with sum K"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 6, level: 1, name: "Difference Array",
+  cfRange: "900–1500",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "'Add v to all elements in range [l..r]' many times, then read final array",
+    "Range update + point query",
+    "Offline range increment problems",
+    "'Paint segment' type problems"
+  ],
+  coreIdea: "diff[l] += v, diff[r+1] -= v. After all updates, prefix sum of diff gives final array. Turns O(n) range updates into O(1) each. Total: O(n+q) vs O(nq) naive.",
+  complexity: "O(n + q) total",
+  template: `<span class="type">long</span>[] <span class="var">diff</span> = <span class="kw">new</span> <span class="type">long</span>[n + <span class="num">2</span>];
+
+<span class="comment">// Range update: add v to [l, r] (0-indexed)</span>
+<span class="kw">void</span> <span class="fn">update</span>(<span class="type">int</span> l, <span class="type">int</span> r, <span class="type">long</span> v) {
+    diff[l] += v;
+    diff[r + <span class="num">1</span>] -= v;
+}
+
+<span class="comment">// Reconstruct final array</span>
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i < n; i++) diff[i] += diff[i - <span class="num">1</span>];`,
+  beginner: "CF 816A – Cutting Banner: add 1 to visible range of banners",
+  intermediate: "LeetCode 1109 – Corporate Flight Bookings",
+  advanced: "CF 786C – Till I Collapse: range painting with color priority",
+  mistakes: [
+    "Array out of bounds: diff needs size n+2 (r+1 can be n)",
+    "Not taking prefix sum at the end",
+    "Confusing with prefix sum direction"
+  ],
+  similar: "Prefix Sum (complement—static array), Sweep Line (event-based version)",
+  lc: ["1109. Corporate Flight Bookings", "1094. Car Pooling", "370. Range Addition (Premium)", "1854. Maximum Population Year", "731. My Calendar II"],
+  cf: ["816A - Karen and Morning", "609F - Frogs and mosquitoes", "295A - Greg and Array", "786C - Till I Collapse", "981E - Addition on Segments"],
+  gfg: ["Minimum number of jumps to reach end", "Minimum operations to make array equal", "Count the elements"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 7, level: 1, name: "Two Pointers",
+  cfRange: "800–1600",
+  tags: ["interview", "cf"],
+  recognition: [
+    "Sorted array + find pair/triplet with given sum",
+    "Remove duplicates in-place",
+    "'Longest subarray/substring with at most k ...'",
+    "Palindrome check, container with most water"
+  ],
+  coreIdea: "Use two indices (lo, hi) moving toward each other (opposite-direction) or same direction (fast/slow). Works when data is sorted or when invariant is monotone. Replaces O(n²) with O(n).",
+  complexity: "O(n) or O(n log n) with sort",
+  template: `<span class="type">int</span> <span class="var">lo</span> = <span class="num">0</span>, <span class="var">hi</span> = n - <span class="num">1</span>;
+<span class="kw">while</span> (lo < hi) {
+    <span class="type">int</span> <span class="var">sum</span> = a[lo] + a[hi];
+    <span class="kw">if</span> (sum == target) { <span class="comment">/* found */</span> lo++; hi--; }
+    <span class="kw">else if</span> (sum < target) lo++;
+    <span class="kw">else</span> hi--;
+}
+
+<span class="comment">// Same-direction variant (fast/slow)</span>
+<span class="type">int</span> <span class="var">slow</span> = <span class="num">0</span>;
+<span class="kw">for</span> (<span class="type">int</span> fast = <span class="num">0</span>; fast < n; fast++) {
+    <span class="kw">if</span> (<span class="fn">condition</span>(a[fast])) a[slow++] = a[fast];
+}`,
+  beginner: "LeetCode 167 – Two Sum II",
+  intermediate: "LeetCode 15 – 3Sum",
+  advanced: "CF 1041D – Glider: two pointers on segments for maximum overlap",
+  mistakes: [
+    "Forgetting to sort first (required for opposite-direction)",
+    "Infinite loop when duplicates not skipped in 3Sum",
+    "Using two pointers when array isn't sorted and no monotone property"
+  ],
+  similar: "Sliding Window (fixed/variable window, same direction), Binary Search (sorted array lookup)",
+  lc: ["167. Two Sum II", "15. 3Sum", "11. Container With Most Water", "42. Trapping Rain Water", "75. Sort Colors"],
+  cf: ["1041D - Glider", "1041E - Tree Shuffling", "279B - Books", "381C - Sereja and Non-Decreasing Sequence", "903C - Boxes Packing"],
+  gfg: ["Pair with given sum in sorted array", "Remove duplicates from sorted array", "Triplet sum in array"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 8, level: 1, name: "Sliding Window",
+  cfRange: "900–1600",
+  tags: ["interview", "cf"],
+  recognition: [
+    "'Maximum/minimum sum of subarray of size k'",
+    "'Longest substring with at most k distinct chars'",
+    "Fixed window size problems",
+    "All subarrays of exactly size k"
+  ],
+  coreIdea: "Maintain a window [l..r]. Expand r to add elements, shrink l to satisfy constraint. For fixed-size window: slide without shrink logic. Window invariant = condition always holds inside.",
+  complexity: "O(n)",
+  template: `<span class="comment">// Variable window: longest with at most k zeros</span>
+<span class="type">int</span> <span class="var">l</span> = <span class="num">0</span>, <span class="var">zeros</span> = <span class="num">0</span>, <span class="var">ans</span> = <span class="num">0</span>;
+<span class="kw">for</span> (<span class="type">int</span> r = <span class="num">0</span>; r < n; r++) {
+    <span class="kw">if</span> (a[r] == <span class="num">0</span>) zeros++;
+    <span class="kw">while</span> (zeros > k) <span class="kw">if</span> (a[l++] == <span class="num">0</span>) zeros--;
+    ans = Math.<span class="fn">max</span>(ans, r - l + <span class="num">1</span>);
+}
+
+<span class="comment">// Fixed window of size k: use deque for max/min</span>
+<span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; <span class="var">dq</span> = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) {
+    <span class="kw">while</span> (!dq.<span class="fn">isEmpty</span>() && dq.<span class="fn">peekFirst</span>() < i - k + <span class="num">1</span>) dq.<span class="fn">pollFirst</span>();
+    <span class="kw">while</span> (!dq.<span class="fn">isEmpty</span>() && a[dq.<span class="fn">peekLast</span>()] <= a[i]) dq.<span class="fn">pollLast</span>();
+    dq.<span class="fn">addLast</span>(i);
+    <span class="kw">if</span> (i >= k - <span class="num">1</span>) ans[i - k + <span class="num">1</span>] = a[dq.<span class="fn">peekFirst</span>()];
+}`,
+  beginner: "LeetCode 643 – Maximum Average Subarray I",
+  intermediate: "LeetCode 76 – Minimum Window Substring",
+  advanced: "CF 1041D – Glider (sliding window on sorted events)",
+  mistakes: [
+    "Forgetting to shrink window (infinite loop)",
+    "Wrong window size check (i >= k-1 vs i > k-1)",
+    "Not initializing frequency map before window"
+  ],
+  similar: "Two Pointers (variable window IS two pointers), Deque/Monotonic Queue (max/min in window)",
+  lc: ["643. Maximum Average Subarray I", "3. Longest Substring Without Repeating", "76. Minimum Window Substring", "239. Sliding Window Maximum", "438. Find All Anagrams in a String"],
+  cf: ["1041D - Glider", "701C - They Are Everywhere", "1060D - Social Experiment", "380C - Sereja and Brackets", "1354C - Steven and Chicken"],
+  gfg: ["First negative in every window of size k", "Count distinct elements in every window", "Maximum sum subarray of size k"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 9, level: 1, name: "Hashing",
+  cfRange: "900–1800",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "Need O(1) lookup for existence/membership",
+    "String matching patterns",
+    "Finding equal subarrays/substrings",
+    "Rolling hash for substring comparison"
+  ],
+  coreIdea: "Map values to integers via hash function. Use for O(1) set/map operations. Rolling hash: hash(s[l..r]) in O(1) using polynomial hashing with large prime. Double hashing reduces collision probability.",
+  complexity: "O(n) build, O(1) query (expected)",
+  template: `<span class="comment">// Polynomial rolling hash for string</span>
+<span class="type">long</span> <span class="var">MOD</span> = <span class="num">1_000_000_007L</span>, <span class="var">BASE</span> = <span class="num">31</span>;
+<span class="type">long</span>[] <span class="var">h</span> = <span class="kw">new</span> <span class="type">long</span>[n + <span class="num">1</span>], <span class="var">pw</span> = <span class="kw">new</span> <span class="type">long</span>[n + <span class="num">1</span>];
+pw[<span class="num">0</span>] = <span class="num">1</span>;
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) {
+    h[i + <span class="num">1</span>] = (h[i] * BASE + s.<span class="fn">charAt</span>(i) - <span class="num">'a'</span> + <span class="num">1</span>) % MOD;
+    pw[i + <span class="num">1</span>] = pw[i] * BASE % MOD;
+}
+<span class="comment">// Hash of s[l..r]</span>
+<span class="type">long</span> <span class="fn">getHash</span>(<span class="type">int</span> l, <span class="type">int</span> r) {
+    <span class="kw">return</span> (h[r+<span class="num">1</span>] - h[l] * pw[r-l+<span class="num">1</span>] % MOD + MOD * MOD) % MOD;
+}`,
+  beginner: "LeetCode 1 – Two Sum (hash set)",
+  intermediate: "LeetCode 187 – Repeated DNA Sequences (rolling hash)",
+  advanced: "CF 1200E – Compress Words (hashing + binary search for longest prefix=suffix)",
+  mistakes: [
+    "Hash collision for single MOD (use double hashing)",
+    "Negative modulo in Java: use +MOD",
+    "Not precomputing powers"
+  ],
+  similar: "Suffix Array (exact string indexing), KMP/Z-function (pattern matching without hashing)",
+  lc: ["1. Two Sum", "187. Repeated DNA Sequences", "718. Maximum Length of Repeated Subarray", "28. Find the Index of First Occurrence", "214. Shortest Palindrome"],
+  cf: ["1200E - Compress Words", "1063F - String Journey", "906E - Reverses", "271A - Beautiful Year", "1253E - Antenna Coverage"],
+  gfg: ["Rabin-Karp String Matching", "Longest substring with same chars at most k distance", "Anagram Substring Search"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 10, level: 1, name: "Sorting Tricks",
+  cfRange: "800–1600",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "Order doesn't matter—can we sort first?",
+    "Need to process elements in a specific order",
+    "Pairing problems (min cost pairing)",
+    "Custom comparator needed"
+  ],
+  coreIdea: "Sorting unlocks O(n log n) solutions to many O(n²) problems. Key tricks: sort by one criterion then process greedily, sort pairs, custom comparators (by ratio, etc.), coordinate compress via sorted unique.",
+  complexity: "O(n log n)",
+  template: `<span class="comment">// Custom sort: sort by (a[i]+b[i]) descending</span>
+<span class="type">Integer</span>[] <span class="var">idx</span> = IntStream.<span class="fn">range</span>(<span class="num">0</span>, n).<span class="fn">boxed</span>().<span class="fn">toArray</span>(<span class="type">Integer</span>[]::new);
+Arrays.<span class="fn">sort</span>(idx, (i, j) -> (a[j] + b[j]) - (a[i] + b[i]));
+
+<span class="comment">// Sort pairs by first, break ties by second</span>
+<span class="type">int</span>[][] <span class="var">pairs</span> = {{<span class="num">1</span>, <span class="num">5</span>}, {<span class="num">1</span>, <span class="num">3</span>}, {<span class="num">2</span>, <span class="num">1</span>}};
+Arrays.<span class="fn">sort</span>(pairs, (x, y) -> x[<span class="num">0</span>] != y[<span class="num">0</span>] ? x[<span class="num">0</span>] - y[<span class="num">0</span>] : x[<span class="num">1</span>] - y[<span class="num">1</span>]);`,
+  beginner: "LeetCode 56 – Merge Intervals (sort by start)",
+  intermediate: "CF 1223C – Save the Nature (sort + greedy on sorted array)",
+  advanced: "CF 1285C – Fadi and LCM (sort by value, process pairs)",
+  mistakes: [
+    "Comparator returning 0 when not equal (breaks stability)",
+    "Integer overflow in comparator: use Long.compare(a, b)",
+    "Assuming stable sort (Java's Arrays.sort for objects is stable, for ints not guaranteed)"
+  ],
+  similar: "Greedy Basics (sorting usually precedes greedy), Coordinate Compression (built on sorting)",
+  lc: ["56. Merge Intervals", "435. Non-overlapping Intervals", "179. Largest Number", "406. Queue Reconstruction by Height", "452. Minimum Number of Arrows"],
+  cf: ["1223C - Save the Nature", "1285C - Fadi and LCM", "1033A - King Escape", "1131D - Gourmet choice", "939B - Hamster Farm"],
+  gfg: ["Minimum platforms", "Activity selection problem", "Job sequencing problem"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 11, level: 1, name: "Greedy Basics",
+  cfRange: "900–1600",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "'Maximize/minimize X with minimum/maximum operations'",
+    "Local optimal choice leads to global optimum",
+    "Exchange argument: swapping two elements doesn't improve solution",
+    "Interval scheduling, activity selection problems"
+  ],
+  coreIdea: "At each step, pick the locally best option. Prove correctness via exchange argument or contradiction. Usually preceded by sorting. Common patterns: sort + scan, priority queue greedy.",
+  complexity: "O(n log n) typically",
+  template: `<span class="comment">// Activity selection: max non-overlapping intervals</span>
+Arrays.<span class="fn">sort</span>(intervals, (a, b) -> a[<span class="num">1</span>] - b[<span class="num">1</span>]); <span class="comment">// sort by end time</span>
+<span class="type">int</span> <span class="var">count</span> = <span class="num">1</span>, <span class="var">lastEnd</span> = intervals[<span class="num">0</span>][<span class="num">1</span>];
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i < n; i++) {
+    <span class="kw">if</span> (intervals[i][<span class="num">0</span>] >= lastEnd) {
+        count++;
+        lastEnd = intervals[i][<span class="num">1</span>];
+    }
+}`,
+  beginner: "CF 977B – Two-gram: most frequent 2-char substring",
+  intermediate: "LeetCode 435 – Non-overlapping Intervals",
+  advanced: "CF 1257D – Collect the Coins: greedy on 2D grid with sorted columns",
+  mistakes: [
+    "Not proving greedy is correct (many problems that look greedy need DP)",
+    "Wrong sort key (start time vs end time for intervals)",
+    "Off-by-one: >= vs > for touching intervals"
+  ],
+  similar: "DP (when greedy fails, try DP), Binary Search on Answer (optimization problems)",
+  lc: ["435. Non-overlapping Intervals", "45. Jump Game II", "55. Jump Game", "406. Queue Reconstruction by Height", "1029. Two City Scheduling"],
+  cf: ["977B - Two-gram", "1257D - Collect the Coins", "1313C - Adding Powers", "1295D - Same GCDs", "439B - Devu the Singer and Churu the Joker"],
+  gfg: ["Activity Selection Problem", "Fractional Knapsack", "Minimum Platforms"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 12, level: 1, name: "Binary Search on Answer",
+  cfRange: "1000–1800",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "'Find minimum X such that condition holds'",
+    "'Find maximum X such that ...'",
+    "Check function is monotone (if X works, X+1 also works OR doesn't)",
+    "Optimization problems where checking is easy but finding optimal is hard"
+  ],
+  coreIdea: "If answer space is monotone, binary search on it. Write isOk(mid) that checks if value 'mid' is feasible. Search lo..hi until lo==hi. Key insight: you don't search array—you search answer space.",
+  complexity: "O(log(answerRange) × check complexity)",
+  template: `<span class="type">long</span> <span class="var">lo</span> = <span class="num">0</span>, <span class="var">hi</span> = <span class="num">2_000_000_000L</span>;
+<span class="kw">while</span> (lo < hi) {
+    <span class="type">long</span> <span class="var">mid</span> = lo + (hi - lo) / <span class="num">2</span>;
+    <span class="kw">if</span> (<span class="fn">isOk</span>(mid)) hi = mid;   <span class="comment">// minimize: go left</span>
+    <span class="kw">else</span> lo = mid + <span class="num">1</span>;          <span class="comment">// maximize: reverse logic</span>
+}
+<span class="comment">// ans = lo</span>
+
+<span class="kw">boolean</span> <span class="fn">isOk</span>(<span class="type">long</span> mid) {
+    <span class="comment">// Can we achieve the task with capacity/threshold = mid?</span>
+    <span class="kw">return</span> <span class="comment">/* check condition */</span>;
+}`,
+  beginner: "LeetCode 875 – Koko Eating Bananas",
+  intermediate: "CF 1060D – Social Experiment: binary search on answer + greedy check",
+  advanced: "CF 1486E – Paired Payment (binary search + DP check function)",
+  mistakes: [
+    "Wrong boundary: lo=0 might miss answer; set hi to max possible",
+    "Infinite loop when lo==mid (use lo=mid+1 not lo=mid for lower bound)",
+    "Check function has a bug (test it on small cases separately)"
+  ],
+  similar: "Two Pointers (for sorted arrays), Parametric Search (binary search on real values)",
+  lc: ["875. Koko Eating Bananas", "1011. Capacity To Ship Packages", "410. Split Array Largest Sum", "774. Minimize Max Distance to Gas Station", "1231. Divide Chocolate"],
+  cf: ["1060D - Social Experiment", "1486E - Paired Payment", "1201C - Maximum Median", "1133C - Balanced Team", "831B - Keyboard Layouts"],
+  gfg: ["Aggressive cows (Painter Partition)", "Allocate minimum pages", "Find the smallest divisor given threshold"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 13, level: 1, name: "Coordinate Compression",
+  cfRange: "1000–1800",
+  tags: ["cf", "icpc", "hidden"],
+  recognition: [
+    "Values up to 10^9 but only n≤10^5 distinct values matter",
+    "Need to use segment tree/BIT but values are huge",
+    "Count inversions on large value arrays",
+    "Sweep line with large coordinate values"
+  ],
+  coreIdea: "Map large values to small indices 0..k-1 via sorted unique values. compress(v) = lowerBound(sorted, v). Reduces value range from 10^9 to n for data structures.",
+  complexity: "O(n log n) compression",
+  template: `<span class="type">int</span>[] <span class="var">a</span> = {<span class="num">1000000</span>, <span class="num">5</span>, <span class="num">999</span>, <span class="num">5</span>};
+<span class="type">int</span>[] <span class="var">sorted</span> = Arrays.<span class="fn">stream</span>(a).<span class="fn">distinct</span>().<span class="fn">sorted</span>().<span class="fn">toArray</span>();
+
+<span class="comment">// Compress: find rank of value v</span>
+<span class="kw">int</span> <span class="fn">compress</span>(<span class="type">int</span> v) {
+    <span class="kw">return</span> Arrays.<span class="fn">binarySearch</span>(sorted, v); <span class="comment">// returns 0-indexed rank</span>
+}
+
+<span class="comment">// After compression, use BIT/Segtree on range [0, sorted.length-1]</span>`,
+  beginner: "LeetCode 315 – Count of Smaller Numbers After Self (coordinate compression + Fenwick tree)",
+  intermediate: "CF 1324F – Maximum White Subtree (compress + tree DP)",
+  advanced: "CF 1083E – The Fair Nut and Rectangles (CHT with compressed coords)",
+  mistakes: [
+    "Using Arrays.binarySearch on unsorted array",
+    "Not handling duplicates (use distinct before sorting)",
+    "Off-by-one: rank 0-indexed or 1-indexed depends on data structure"
+  ],
+  similar: "Sorting Tricks (uses sorting), Segment Tree (often combined)",
+  lc: ["315. Count of Smaller Numbers After Self", "327. Count of Range Sum", "493. Reverse Pairs", "218. The Skyline Problem", "1157. Online Majority Element In Subarray"],
+  cf: ["1324F - Maximum White Subtree", "785D - Anton and School", "1354D - Multiset", "652F - Reinstating Forceful Layers", "1515E - Phoenix and Computers"],
+  gfg: ["Count Inversions", "Maximum Sum increasing subsequence", "Count smaller elements on right side"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: true
+},
+{
+  id: 14, level: 1, name: "Basic Mathematics",
+  cfRange: "800–1600",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "GCD, LCM problems",
+    "Sieve of Eratosthenes (prime-related)",
+    "Number theory: divisors, prime factorization",
+    "Modular arithmetic in counting problems"
+  ],
+  coreIdea: "Master: Euclidean GCD, Sieve O(n log log n), prime factorization O(√n), modular inverse (Fermat's little theorem), Euler's totient function. These appear constantly at all CF levels.",
+  complexity: "GCD: O(log n), Sieve: O(n log log n), Factorize: O(√n)",
+  template: `<span class="comment">// GCD</span>
+<span class="type">int</span> <span class="fn">gcd</span>(<span class="type">int</span> a, <span class="type">int</span> b) { <span class="kw">return</span> b == <span class="num">0</span> ? a : <span class="fn">gcd</span>(b, a % b); }
+
+<span class="comment">// Sieve of Eratosthenes</span>
+<span class="type">boolean</span>[] <span class="var">sieve</span> = <span class="kw">new</span> <span class="type">boolean</span>[N + <span class="num">1</span>];
+Arrays.<span class="fn">fill</span>(sieve, <span class="kw">true</span>); sieve[<span class="num">0</span>] = sieve[<span class="num">1</span>] = <span class="kw">false</span>;
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">2</span>; (long)i*i <= N; i++)
+    <span class="kw">if</span> (sieve[i]) <span class="kw">for</span> (<span class="type">int</span> j = i*i; j <= N; j += i) sieve[j] = <span class="kw">false</span>;
+
+<span class="comment">// Modular inverse (p prime)</span>
+<span class="type">long</span> <span class="fn">modInv</span>(<span class="type">long</span> a, <span class="type">long</span> p) { <span class="kw">return</span> <span class="fn">modPow</span>(a, p - <span class="num">2</span>, p); }`,
+  beginner: "CF 550A – Two Integers: find a,b with gcd=g, lcm=l",
+  intermediate: "CF 1476E – Pattern Matching: count multiples in ranges using inclusion-exclusion",
+  advanced: "CF 1295D – Same GCDs (Euler's totient function)",
+  mistakes: [
+    "LCM overflow: compute as a/gcd(a,b)*b not a*b/gcd",
+    "Sieve starting from i*i (skip already crossed)",
+    "Modular inverse requires p to be prime"
+  ],
+  similar: "Modular Arithmetic (L2 - deeper), Combinatorics (uses modular inverse for nCr)",
+  lc: ["204. Count Primes", "1979. Find Greatest Common Divisor of Array", "914. X of a Kind in a Deck", "858. Mirror Reflection", "1447. Simplified Fractions"],
+  cf: ["550A - Two Integers", "1295D - Same GCDs", "1476E - Pattern Matching", "1033B - Square Difference", "165C - Simple Strings"],
+  gfg: ["Sieve of Eratosthenes", "GCD and LCM", "All divisors of a number"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 15, level: 1, name: "Bit Manipulation Basics",
+  cfRange: "800–1600",
+  tags: ["interview", "cf"],
+  recognition: [
+    "XOR problems: find single element, swap without temp",
+    "'Subsets of array' (2^n subsets via bitmask)",
+    "Check if power of 2: n & (n-1) == 0",
+    "Turn on/off specific bits"
+  ],
+  coreIdea: "XOR = addition mod 2, AND = intersection, OR = union. XOR self-cancellation finds unique elements. Left shift = multiply by 2, right shift = divide by 2. Bitmask represents a subset.",
+  complexity: "O(1) per operation, O(2^n) for all subsets",
+  template: `<span class="comment">// Common bit tricks</span>
+n & (n-<span class="num">1</span>)         <span class="comment">// clear lowest set bit; == 0 iff power of 2</span>
+n & (-n)          <span class="comment">// isolate lowest set bit</span>
+n | (n-<span class="num">1</span>)         <span class="comment">// set all bits from lowest set bit down</span>
+(<span class="num">1</span> << k)          <span class="comment">// mask for bit k</span>
+n >> k            <span class="comment">// divide by 2^k</span>
+n << k            <span class="comment">// multiply by 2^k</span>
+
+<span class="comment">// Enumerate all subsets of mask</span>
+<span class="kw">for</span> (<span class="type">int</span> <span class="var">sub</span> = mask; sub > <span class="num">0</span>; sub = (sub - <span class="num">1</span>) & mask) {
+    <span class="comment">// process subset 'sub'</span>
+}`,
+  beginner: "LeetCode 136 – Single Number (XOR)",
+  intermediate: "LeetCode 1318 – Minimum Flips to Make a OR b Equal to c",
+  advanced: "CF 1336E – Chiori and Doll Partitioning (XOR basis)",
+  mistakes: [
+    "Operator precedence: (1 << k) & n, not 1 << k & n",
+    "Java: use >>> for unsigned right shift (>> is signed)",
+    "int overflow with 1 << 31 (use 1L << 31)"
+  ],
+  similar: "Prefix XOR (L2 - XOR on ranges), Bitmask DP (L3 - DP on subsets)",
+  lc: ["136. Single Number", "191. Number of 1 Bits", "231. Power of Two", "1318. Minimum Flips to Make a OR b Equal to c", "338. Counting Bits"],
+  cf: ["1337E - Chiori and Doll Partitioning", "864B - Berland. Snapchat", "1244C - The Football Season", "1099D - Sum in the Tree", "1174D - Ehab and the Expected XOR Problem"],
+  gfg: ["Find the two non-repeating elements", "Count set bits", "Reverse bits of a number"],
+  interview: true, cf_imp: true, icpc_imp: false, hidden: false
+},
+
+// ======== LEVEL 2 ========
+{
+  id: 16, level: 2, name: "Monotonic Stack",
+  cfRange: "1200–1800",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "'Next Greater/Smaller Element'",
+    "Largest rectangle in histogram",
+    "'Find previous element greater than current'",
+    "Stack that maintains increasing or decreasing order"
+  ],
+  coreIdea: "Maintain a stack that is always sorted (increasing or decreasing). When new element violates order, pop until it doesn't. Popped element's 'answer' is the current element. Each element pushed/popped once → O(n).",
+  complexity: "O(n)",
+  template: `<span class="comment">// Next Greater Element</span>
+<span class="type">int</span>[] <span class="var">nge</span> = <span class="kw">new</span> <span class="type">int</span>[n];
+Arrays.<span class="fn">fill</span>(nge, -<span class="num">1</span>);
+<span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; <span class="var">stk</span> = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) {
+    <span class="kw">while</span> (!stk.<span class="fn">isEmpty</span>() && a[stk.<span class="fn">peek</span>()] < a[i])
+        nge[stk.<span class="fn">pop</span>()] = a[i];
+    stk.<span class="fn">push</span>(i);
+}
+<span class="comment">// Remaining in stack: no NGE exists (stays -1)</span>`,
+  beginner: "LeetCode 496 – Next Greater Element I",
+  intermediate: "LeetCode 84 – Largest Rectangle in Histogram",
+  advanced: "CF 1603C – Extreme Extension (mono stack with greedy)",
+  mistakes: [
+    "Storing values vs indices (store indices to compute distances)",
+    "Off-by-one: nge[stk.pop()] = a[i] vs = i (depends on what you need)",
+    "Circular array NGE: iterate 2n, mod n"
+  ],
+  similar: "Monotonic Queue (sliding window min/max), Segment Tree (range min/max queries)",
+  lc: ["496. Next Greater Element I", "503. Next Greater Element II", "84. Largest Rectangle in Histogram", "85. Maximal Rectangle", "901. Online Stock Span"],
+  cf: ["1603C - Extreme Extension", "1405C - Balanced Palindrome", "1239A - Ivan the Fool", "1025B - Weakened Common Divisor", "1092E - Minimal Diameter Forest"],
+  gfg: ["Next Greater Element", "Largest Rectangle in Histogram", "Maximum of minimum for every window size"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 17, level: 2, name: "Monotonic Queue",
+  cfRange: "1300–1900",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "Sliding window maximum/minimum",
+    "'Max/min of subarray of size k' for all subarrays",
+    "Queue that maintains front = current window's max",
+    "Often combined with DP: dp[i] = max dp[j] for j in [i-k, i-1]"
+  ],
+  coreIdea: "Deque maintains indices; front = max of current window. When new element added: pop from back all elements smaller (they can never be max). Pop from front if outside window. O(n) total.",
+  complexity: "O(n)",
+  template: `<span class="comment">// Sliding window maximum using monotonic deque</span>
+<span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; <span class="var">dq</span> = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+<span class="type">int</span>[] <span class="var">result</span> = <span class="kw">new</span> <span class="type">int</span>[n - k + <span class="num">1</span>];
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) {
+    <span class="kw">while</span> (!dq.<span class="fn">isEmpty</span>() && dq.<span class="fn">peekFirst</span>() < i - k + <span class="num">1</span>) dq.<span class="fn">pollFirst</span>();
+    <span class="kw">while</span> (!dq.<span class="fn">isEmpty</span>() && a[dq.<span class="fn">peekLast</span>()] <= a[i]) dq.<span class="fn">pollLast</span>();
+    dq.<span class="fn">addLast</span>(i);
+    <span class="kw">if</span> (i >= k - <span class="num">1</span>) result[i - k + <span class="num">1</span>] = a[dq.<span class="fn">peekFirst</span>()];
+}`,
+  beginner: "LeetCode 239 – Sliding Window Maximum",
+  intermediate: "CF 1660E – Matrix and Shifts (monotonic queue DP)",
+  advanced: "CF 1567E – Non-Decreasing Dilemma (mono queue + binary search)",
+  mistakes: [
+    "Using <= vs < when popping from back (for max: pop if <=, for strict max: pop if <)",
+    "Forgetting front expiry check",
+    "Using Stack instead of Deque"
+  ],
+  similar: "Monotonic Stack (no window, just pop when violated), Segment Tree (O(log n) range min/max for arbitrary ranges)",
+  lc: ["239. Sliding Window Maximum", "1438. Longest Continuous Subarray With Absolute Diff ≤ Limit", "862. Shortest Subarray with Sum at Least K", "1696. Jump Game VI", "1425. Constrained Subsequence Sum"],
+  cf: ["1660E - Matrix and Shifts", "1567E - Non-Decreasing Dilemma", "1108E - Array and Segments", "1481F - AB Tree", "1446D - Frequency Problem"],
+  gfg: ["Sliding Window Maximum", "Maximum of each window", "First negative integer in window"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 18, level: 2, name: "Sweep Line",
+  cfRange: "1300–1900",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "Interval overlap counting",
+    "Maximum overlap at any point in time",
+    "Rectangle area union",
+    "Event-based processing: sort events, process in order"
+  ],
+  coreIdea: "Model problem as events on a timeline. Sort events by position/time. Sweep from left to right maintaining active state. Difference array is a simple sweep line. More complex: use BST/segment tree for active set.",
+  complexity: "O(n log n) with sort",
+  template: `<span class="comment">// Count max overlap of intervals</span>
+<span class="type">List</span>&lt;<span class="type">int</span>[]&gt; <span class="var">events</span> = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span>[] <span class="var">iv</span> : intervals) {
+    events.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">int</span>[]{iv[<span class="num">0</span>], <span class="num">1</span>});   <span class="comment">// start event</span>
+    events.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">int</span>[]{iv[<span class="num">1</span>], -<span class="num">1</span>});  <span class="comment">// end event</span>
+}
+events.<span class="fn">sort</span>((a, b) -> a[<span class="num">0</span>] != b[<span class="num">0</span>] ? a[<span class="num">0</span>]-b[<span class="num">0</span>] : a[<span class="num">1</span>]-b[<span class="num">1</span>]);
+<span class="type">int</span> <span class="var">active</span> = <span class="num">0</span>, <span class="var">maxActive</span> = <span class="num">0</span>;
+<span class="kw">for</span> (<span class="type">int</span>[] <span class="var">e</span> : events) {
+    active += e[<span class="num">1</span>];
+    maxActive = Math.<span class="fn">max</span>(maxActive, active);
+}`,
+  beginner: "LeetCode 253 – Meeting Rooms II (max overlap)",
+  intermediate: "CF 1284C – New Year and Permutation (sweep + counting)",
+  advanced: "CF 1601C – Optimal Insertion (sweep line + sorting trick)",
+  mistakes: [
+    "Tie-breaking: end events before start events at same point (or vice versa—depends on problem)",
+    "Not sorting events correctly",
+    "Missing endpoint-inclusive vs exclusive"
+  ],
+  similar: "Difference Array (simplest sweep), Segment Tree with Lazy (complex sweep line queries)",
+  lc: ["253. Meeting Rooms II", "218. The Skyline Problem", "56. Merge Intervals", "759. Employee Free Time", "1272. Remove Interval"],
+  cf: ["1284C - New Year and Permutation", "1601C - Optimal Insertion", "1350B - Orac and Models", "1093G - Multidimensional Queries", "1063B - Labyrinth"],
+  gfg: ["Minimum platforms", "Activity selection", "Maximum sum of overlapping intervals"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 19, level: 2, name: "Interval Merging",
+  cfRange: "1100–1600",
+  tags: ["interview", "cf"],
+  recognition: [
+    "'Merge all overlapping intervals'",
+    "Count non-overlapping intervals after merge",
+    "Calendar conflict detection",
+    "Paint walls: find total painted length"
+  ],
+  coreIdea: "Sort by start time. Iterate: if current interval overlaps last merged (current.start ≤ last.end), extend last.end. Else, add new interval. O(n log n) total.",
+  complexity: "O(n log n)",
+  template: `Arrays.<span class="fn">sort</span>(intervals, (a, b) -> a[<span class="num">0</span>] - b[<span class="num">0</span>]);
+<span class="type">List</span>&lt;<span class="type">int</span>[]&gt; <span class="var">merged</span> = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span>[] <span class="var">iv</span> : intervals) {
+    <span class="kw">if</span> (merged.<span class="fn">isEmpty</span>() || merged.<span class="fn">get</span>(merged.<span class="fn">size</span>()-<span class="num">1</span>)[<span class="num">1</span>] < iv[<span class="num">0</span>])
+        merged.<span class="fn">add</span>(iv);
+    <span class="kw">else</span>
+        merged.<span class="fn">get</span>(merged.<span class="fn">size</span>()-<span class="num">1</span>)[<span class="num">1</span>] = Math.<span class="fn">max</span>(merged.<span class="fn">get</span>(merged.<span class="fn">size</span>()-<span class="num">1</span>)[<span class="num">1</span>], iv[<span class="num">1</span>]);
+}`,
+  beginner: "LeetCode 56 – Merge Intervals",
+  intermediate: "LeetCode 57 – Insert Interval",
+  advanced: "CF 1601C – Optimal Insertion (merge + two-pointer on sorted arrays)",
+  mistakes: [
+    "Using < instead of <= for touch detection (depends if touching = overlapping)",
+    "Modifying input array in-place while iterating",
+    "Not sorting before merging"
+  ],
+  similar: "Sweep Line (more general), Difference Array (range cover counting)",
+  lc: ["56. Merge Intervals", "57. Insert Interval", "435. Non-overlapping Intervals", "986. Interval List Intersections", "1288. Remove Covered Intervals"],
+  cf: ["1601C - Optimal Insertion", "816A - Karen and Morning", "580C - Kefa and Park", "849B - Arpa and a game with Mojtaba", "1131F - Asya And Koshka"],
+  gfg: ["Merge overlapping intervals", "Insert an interval", "Union of two sorted arrays"],
+  interview: true, cf_imp: true, icpc_imp: false, hidden: false
+},
+{
+  id: 20, level: 2, name: "Prefix XOR",
+  cfRange: "1200–1800",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "'Count subarrays with XOR = k'",
+    "Find subarray with given XOR",
+    "Toggle operations on ranges (XOR with 1)",
+    "Problems involving parity of number of 1s"
+  ],
+  coreIdea: "xorPre[i] = a[0] XOR a[1] XOR ... XOR a[i-1]. XOR of range [l..r] = xorPre[r+1] XOR xorPre[l]. Count subarrays with XOR=k: count pairs (i,j) where xorPre[j] XOR xorPre[i] = k.",
+  complexity: "O(n) with HashMap",
+  template: `<span class="comment">// Count subarrays with XOR = k</span>
+<span class="type">Map</span>&lt;<span class="type">Integer</span>, <span class="type">Integer</span>&gt; <span class="var">cnt</span> = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+cnt.<span class="fn">put</span>(<span class="num">0</span>, <span class="num">1</span>);
+<span class="type">int</span> <span class="var">xorPre</span> = <span class="num">0</span>, <span class="var">ans</span> = <span class="num">0</span>;
+<span class="kw">for</span> (<span class="type">int</span> <span class="var">x</span> : a) {
+    xorPre ^= x;
+    ans += cnt.<span class="fn">getOrDefault</span>(xorPre ^ k, <span class="num">0</span>);
+    cnt.<span class="fn">merge</span>(xorPre, <span class="num">1</span>, <span class="type">Integer</span>::sum);
+}`,
+  beginner: "LeetCode 1863 – Sum of All Subset XOR Totals",
+  intermediate: "LeetCode 1442 – Count Triplets That Can Form Two Arrays of Equal XOR",
+  advanced: "CF 1336E – Chiori and Doll Partitioning (XOR linear basis)",
+  mistakes: [
+    "Not seeding map with {0: 1} (empty prefix has XOR 0)",
+    "Querying before inserting current prefix (order matters)",
+    "Confusing prefix XOR with prefix sum"
+  ],
+  similar: "Prefix Sum (same idea, different operation), Bit Manipulation Basics",
+  lc: ["1863. Sum of All Subset XOR Totals", "1442. Count Triplets", "1734. Decode XORed Permutation", "2683. Neighboring Bitwise XOR", "2429. Minimize XOR"],
+  cf: ["1336E - Chiori and Doll Partitioning", "1174D - Expected XOR Problem", "1057C - Palindrome XOR", "768C - Jon Snow and his Favourite Number", "1270E - Divide Points"],
+  gfg: ["Subarray with given XOR", "Maximum XOR of two numbers", "Find two non-repeating elements"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 21, level: 2, name: "Meet in the Middle",
+  cfRange: "1400–2000",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "n ≤ 40 (halved: 20 per half)",
+    "2^n too slow but 2^(n/2) is fine",
+    "Subset sum problems with large n",
+    "'Count pairs' from two separate halves"
+  ],
+  coreIdea: "Split problem in half. Enumerate all possibilities for each half (2^(n/2) each). Combine using sorting + binary search or two pointers. Classic: find subset with sum S in 2^(n/2) * n time.",
+  complexity: "O(2^(n/2) × n)",
+  template: `<span class="comment">// Subset sum = target with n up to 40</span>
+<span class="type">int</span> <span class="var">half</span> = n / <span class="num">2</span>;
+<span class="type">List</span>&lt;<span class="type">Long</span>&gt; <span class="var">leftSums</span> = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span> mask = <span class="num">0</span>; mask < (<span class="num">1</span> << half); mask++) {
+    <span class="type">long</span> <span class="var">s</span> = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < half; i++) <span class="kw">if</span> ((mask >> i & <span class="num">1</span>) == <span class="num">1</span>) s += a[i];
+    leftSums.<span class="fn">add</span>(s);
+}
+Collections.<span class="fn">sort</span>(leftSums);
+<span class="comment">// For each right half subset sum s2, check if (target - s2) in leftSums</span>`,
+  beginner: "LeetCode 805 – Split Array Same Average (MITM approach)",
+  intermediate: "CF 1209F – Koala and Notebook (MITM + hashing)",
+  advanced: "CF 1553J – Pear Trees (MITM on bitmask + DP combination)",
+  mistakes: [
+    "Forgetting to sort the first half before binary searching",
+    "Handling duplicates: count occurrences, not just existence",
+    "Memory: 2^20 × 8 bytes ≈ 8MB per array, watch limits"
+  ],
+  similar: "Bitmask DP (n ≤ 20 exact), Backtracking (n small, exponential)",
+  lc: ["805. Split Array Same Average", "1755. Closest Subsequence Sum", "1049. Last Stone Weight II", "494. Target Sum", "956. Tallest Billboard"],
+  cf: ["1209F - Koala and Notebook", "1553J - Pear Trees", "888E - Maximum Subsequence", "906E - Reverses", "1326C - Permutation Partitions"],
+  gfg: ["Subsets with given sum", "Count pairs whose XOR equals k", "Find four elements that sum to given value"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 22, level: 2, name: "Backtracking",
+  cfRange: "1000–1600",
+  tags: ["interview"],
+  recognition: [
+    "'Generate all valid combinations/permutations'",
+    "n ≤ 15 with exponential state space",
+    "Constraint satisfaction: N-Queens, Sudoku",
+    "Pruning: eliminate invalid branches early"
+  ],
+  coreIdea: "DFS through solution space. Try choice, recurse, undo choice. Add pruning to eliminate invalid/suboptimal branches early. Key: the 'undo' step (backtrack) restores state.",
+  complexity: "O(n! × n) worst case, much faster with pruning",
+  template: `<span class="kw">void</span> <span class="fn">backtrack</span>(<span class="type">int</span> pos, <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; current) {
+    <span class="kw">if</span> (<span class="fn">isGoal</span>(pos)) { result.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(current)); <span class="kw">return</span>; }
+    <span class="kw">for</span> (<span class="type">int</span> <span class="var">choice</span> : <span class="fn">getChoices</span>(pos)) {
+        <span class="kw">if</span> (!<span class="fn">isValid</span>(choice)) <span class="kw">continue</span>; <span class="comment">// prune</span>
+        current.<span class="fn">add</span>(choice);
+        <span class="fn">backtrack</span>(pos + <span class="num">1</span>, current);
+        current.<span class="fn">remove</span>(current.<span class="fn">size</span>() - <span class="num">1</span>); <span class="comment">// undo</span>
+    }
+}`,
+  beginner: "LeetCode 46 – Permutations",
+  intermediate: "LeetCode 51 – N-Queens",
+  advanced: "CF 1278D – Segment Tree Beats (backtracking structure insight)",
+  mistakes: [
+    "Not undoing state (forgot to remove from 'used' set)",
+    "Adding reference instead of copy to result list",
+    "Missing base case (stack overflow)"
+  ],
+  similar: "BFS (when optimal path needed), DP (when overlapping subproblems)",
+  lc: ["46. Permutations", "78. Subsets", "51. N-Queens", "37. Sudoku Solver", "131. Palindrome Partitioning"],
+  cf: ["1278D - Segment Tree Beats", "1105C - Ayoub and Lost Array", "877B - Elections in Berland", "1033E - Hidden Bipartite Graph", "1198C - Introverts and Extroverts"],
+  gfg: ["N-Queen Problem", "Rat in a Maze", "Word Break Problem"],
+  interview: true, cf_imp: false, icpc_imp: true, hidden: false
+},
+{
+  id: 23, level: 2, name: "Graph Traversal (BFS/DFS)",
+  cfRange: "1000–1800",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "Connectivity: are two nodes reachable?",
+    "Shortest path in unweighted graph (BFS)",
+    "Connected components (DFS/BFS)",
+    "Grid traversal: 4/8-directional movement"
+  ],
+  coreIdea: "BFS: shortest path in unweighted graph (level-by-level). DFS: explore deeply, good for connectivity/cycle detection/topological sort. BFS uses queue, DFS uses stack/recursion. Both O(V+E).",
+  complexity: "O(V + E)",
+  template: `<span class="comment">// BFS shortest path</span>
+<span class="type">int</span>[] <span class="var">dist</span> = <span class="kw">new</span> <span class="type">int</span>[n]; Arrays.<span class="fn">fill</span>(dist, -<span class="num">1</span>);
+<span class="type">Queue</span>&lt;<span class="type">Integer</span>&gt; <span class="var">q</span> = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+dist[src] = <span class="num">0</span>; q.<span class="fn">add</span>(src);
+<span class="kw">while</span> (!q.<span class="fn">isEmpty</span>()) {
+    <span class="type">int</span> <span class="var">u</span> = q.<span class="fn">poll</span>();
+    <span class="kw">for</span> (<span class="type">int</span> <span class="var">v</span> : adj[u]) {
+        <span class="kw">if</span> (dist[v] == -<span class="num">1</span>) { dist[v] = dist[u] + <span class="num">1</span>; q.<span class="fn">add</span>(v); }
+    }
+}
+<span class="comment">// Multi-source BFS: add all sources with dist=0</span>`,
+  beginner: "LeetCode 200 – Number of Islands",
+  intermediate: "CF 1365D – Minimal Cost (BFS on grid with special edges)",
+  advanced: "CF 1163C – Evacuation Plans (BFS on modified graph)",
+  mistakes: [
+    "Not marking visited before adding to queue (causes TLE)",
+    "Using DFS for shortest path (gives wrong answer unless unweighted+no cycles)",
+    "Stack overflow for large DFS: convert to iterative"
+  ],
+  similar: "Dijkstra (weighted BFS), Topological Sort (DFS on DAG), Multi-source BFS (0-1 BFS trick)",
+  lc: ["200. Number of Islands", "994. Rotting Oranges", "127. Word Ladder", "433. Minimum Genetic Mutation", "1926. Nearest Exit from Entrance in Maze"],
+  cf: ["1365D - Minimal Cost", "1163C - Evacuation Plans", "1324F - Maximum White Subtree", "938C - Constructive Problems", "1215D - Ticket Game"],
+  gfg: ["Bipartite graph", "Shortest path in binary matrix", "Number of islands"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 24, level: 2, name: "Topological Sort",
+  cfRange: "1200–1800",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "DAG with dependencies: 'A must come before B'",
+    "Detect cycle in directed graph",
+    "Course scheduling problems",
+    "Find order of tasks with prerequisites"
+  ],
+  coreIdea: "Kahn's algorithm: process nodes with in-degree 0 (BFS-based). DFS-based: post-order gives reverse topological order. If not all nodes processed → cycle exists. Works only on DAGs.",
+  complexity: "O(V + E)",
+  template: `<span class="comment">// Kahn's Algorithm</span>
+<span class="type">int</span>[] <span class="var">indeg</span> = <span class="kw">new</span> <span class="type">int</span>[n];
+<span class="kw">for</span> (<span class="type">int</span> u = <span class="num">0</span>; u < n; u++) <span class="kw">for</span> (<span class="type">int</span> v : adj[u]) indeg[v]++;
+<span class="type">Queue</span>&lt;<span class="type">Integer</span>&gt; <span class="var">q</span> = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) <span class="kw">if</span> (indeg[i] == <span class="num">0</span>) q.<span class="fn">add</span>(i);
+<span class="type">List</span>&lt;<span class="type">Integer</span>&gt; <span class="var">order</span> = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+<span class="kw">while</span> (!q.<span class="fn">isEmpty</span>()) {
+    <span class="type">int</span> <span class="var">u</span> = q.<span class="fn">poll</span>(); order.<span class="fn">add</span>(u);
+    <span class="kw">for</span> (<span class="type">int</span> v : adj[u]) <span class="kw">if</span> (--indeg[v] == <span class="num">0</span>) q.<span class="fn">add</span>(v);
+}
+<span class="kw">boolean</span> <span class="var">hasCycle</span> = order.<span class="fn">size</span>() < n;`,
+  beginner: "LeetCode 207 – Course Schedule",
+  intermediate: "CF 1385E – Directing Edges (topological + greedy)",
+  advanced: "CF 1442E – Black, White and Grey (toposort + binary search on answer)",
+  mistakes: [
+    "Applying toposort to undirected graph (use DFS cycle detection instead)",
+    "Not detecting cycles: always check if all nodes processed",
+    "Using wrong queue: PriorityQueue for lexicographically smallest order"
+  ],
+  similar: "DFS (DFS-based toposort), SCC (for cyclic graphs, reduce to DAG first)",
+  lc: ["207. Course Schedule", "210. Course Schedule II", "269. Alien Dictionary", "1203. Sort Items by Groups Respecting Dependencies", "329. Longest Increasing Path in a Matrix"],
+  cf: ["1385E - Directing Edges", "1442E - Black, White and Grey", "1244F - Chips", "1217E - Sum Queries?", "1320B - Navigation System"],
+  gfg: ["Topological Sort", "Detect Cycle in Directed Graph", "Longest Path in DAG"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 25, level: 2, name: "Union Find (DSU)",
+  cfRange: "1200–1900",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "Dynamic connectivity: 'are u and v connected?'",
+    "Merge groups over time",
+    "Minimum Spanning Tree (Kruskal's)",
+    "Count connected components after edges added"
+  ],
+  coreIdea: "Each node has parent. Find root via path compression (O(α)). Union by rank/size to keep tree flat. Two nodes connected iff same root. Handles offline merge-query in near O(n) total.",
+  complexity: "O(α(n)) per operation (effectively O(1))",
+  template: `<span class="type">int</span>[] <span class="var">parent</span>, <span class="var">rank</span>;
+DSU(<span class="type">int</span> n) {
+    parent = IntStream.<span class="fn">range</span>(<span class="num">0</span>, n).<span class="fn">toArray</span>();
+    rank = <span class="kw">new</span> <span class="type">int</span>[n];
+}
+<span class="type">int</span> <span class="fn">find</span>(<span class="type">int</span> x) {
+    <span class="kw">return</span> parent[x] == x ? x : (parent[x] = <span class="fn">find</span>(parent[x]));
+}
+<span class="kw">boolean</span> <span class="fn">union</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+    a = <span class="fn">find</span>(a); b = <span class="fn">find</span>(b);
+    <span class="kw">if</span> (a == b) <span class="kw">return false</span>;
+    <span class="kw">if</span> (rank[a] < rank[b]) { <span class="type">int</span> t = a; a = b; b = t; }
+    parent[b] = a; <span class="kw">if</span> (rank[a] == rank[b]) rank[a]++;
+    <span class="kw">return true</span>;
+}`,
+  beginner: "LeetCode 547 – Number of Provinces",
+  intermediate: "CF 1253D – Harmonious Graph",
+  advanced: "CF 1613E – Crazy Robot (DSU + reverse time trick)",
+  mistakes: [
+    "Calling find() twice and parent changed in between (use stored root)",
+    "Not using path compression + union by rank (gets TLE on large input)",
+    "DSU doesn't support disconnection (use offline or persistent DSU)"
+  ],
+  similar: "BFS/DFS (static connectivity), Segment Tree (for range merging—'Segment Tree beats' variant)",
+  lc: ["547. Number of Provinces", "684. Redundant Connection", "1319. Number of Operations to Make Network Connected", "959. Regions Cut By Slashes", "1061. Lexicographically Smallest Equivalent String"],
+  cf: ["1253D - Harmonious Graph", "1613E - Crazy Robot", "1303D - Fill the Grid", "1183E - Subsequences", "1217F - Forced Online Queries"],
+  gfg: ["Find if path exists in graph", "Number of connected components", "Kruskal's MST"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 26, level: 2, name: "Shortest Path",
+  cfRange: "1200–2000",
+  tags: ["interview", "cf", "icpc"],
+  recognition: [
+    "Weighted graph: 'minimum cost path from u to v'",
+    "Non-negative weights → Dijkstra",
+    "Negative weights → Bellman-Ford",
+    "0-1 weights → 0-1 BFS (deque)"
+  ],
+  coreIdea: "Dijkstra: greedy, processes nearest node first via min-heap. O((V+E)logV). 0-1 BFS: push to front if weight 0, back if weight 1. Bellman-Ford: relax all edges V-1 times, detects negative cycles.",
+  complexity: "Dijkstra: O((V+E)logV), Bellman-Ford: O(VE)",
+  template: `<span class="comment">// Dijkstra with priority queue</span>
+<span class="type">long</span>[] <span class="var">dist</span> = <span class="kw">new</span> <span class="type">long</span>[n]; Arrays.<span class="fn">fill</span>(dist, <span class="type">Long</span>.MAX_VALUE);
+<span class="type">PriorityQueue</span>&lt;<span class="type">long</span>[]&gt; <span class="var">pq</span> = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;(<span class="type">Comparator</span>.<span class="fn">comparingLong</span>(a -> a[<span class="num">0</span>]));
+dist[src] = <span class="num">0</span>; pq.<span class="fn">offer</span>(<span class="kw">new</span> <span class="type">long</span>[]{<span class="num">0</span>, src});
+<span class="kw">while</span> (!pq.<span class="fn">isEmpty</span>()) {
+    <span class="type">long</span>[] <span class="var">cur</span> = pq.<span class="fn">poll</span>();
+    <span class="type">long</span> <span class="var">d</span> = cur[<span class="num">0</span>]; <span class="type">int</span> <span class="var">u</span> = (<span class="type">int</span>) cur[<span class="num">1</span>];
+    <span class="kw">if</span> (d > dist[u]) <span class="kw">continue</span>; <span class="comment">// stale</span>
+    <span class="kw">for</span> (<span class="type">long</span>[] <span class="var">e</span> : adj[u]) {
+        <span class="type">long</span> <span class="var">nd</span> = dist[u] + e[<span class="num">1</span>];
+        <span class="kw">if</span> (nd < dist[(<span class="type">int</span>)e[<span class="num">0</span>]]) { dist[(<span class="type">int</span>)e[<span class="num">0</span>]] = nd; pq.<span class="fn">offer</span>(<span class="kw">new</span> <span class="type">long</span>[]{nd, e[<span class="num">0</span>]}); }
+    }
+}`,
+  beginner: "LeetCode 743 – Network Delay Time",
+  intermediate: "CF 1512H – Maximising Happiness (Dijkstra on condensed graph)",
+  advanced: "CF 1601E – Joystick (Dijkstra on implicit graph)",
+  mistakes: [
+    "Not skipping stale entries (d > dist[u]) → O(E log E) not O(E log V)",
+    "Using int instead of long for distances (overflow)",
+    "Dijkstra on negative-weight graph (use Bellman-Ford)"
+  ],
+  similar: "BFS (unweighted = Dijkstra with weight 1), Floyd-Warshall (all pairs shortest paths)",
+  lc: ["743. Network Delay Time", "787. Cheapest Flights Within K Stops", "1514. Path with Maximum Probability", "1631. Path With Minimum Effort", "778. Swim in Rising Water"],
+  cf: ["1512H - Maximising Happiness", "1601E - Joystick", "1338B - Edge Weight Assignment", "1163F - Indecisive Taxi Fee", "1055F - Tree and XOR"],
+  gfg: ["Dijkstra's Shortest Path", "Bellman-Ford Algorithm", "Floyd Warshall Algorithm"],
+  interview: true, cf_imp: true, icpc_imp: true, hidden: false
+},
+
+// ======== LEVEL 3 ========
+{
+  id: 27, level: 3, name: "Digit DP",
+  cfRange: "1700–2200",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "'Count numbers in [1, n] with property X'",
+    "Property X depends on digits of the number",
+    "Questions like: sum of digits, digit count, no two adjacent same digits"
+  ],
+  coreIdea: "DP on digit position. State: (pos, tight, ...). 'tight' = are we still bounded by n's digits? At each position, choose digit 0–9 (or 0–d[pos] if tight). Count valid completions.",
+  complexity: "O(digits × states × 10)",
+  template: `<span class="comment">// Count numbers in [0, n] satisfying property</span>
+<span class="type">String</span> <span class="var">num</span> = <span class="type">Long</span>.<span class="fn">toString</span>(n);
+<span class="type">long</span>[][][] <span class="var">dp</span> = <span class="kw">new</span> <span class="type">long</span>[num.<span class="fn">length</span>()][<span class="num">2</span>][<span class="comment">/* other states */</span>];
+<span class="comment">// Initialize with -1 for memoization</span>
+
+<span class="type">long</span> <span class="fn">solve</span>(<span class="type">int</span> pos, <span class="kw">boolean</span> tight, <span class="kw">boolean</span> started, ...) {
+    <span class="kw">if</span> (pos == num.<span class="fn">length</span>()) <span class="kw">return</span> <span class="fn">isValid</span>() ? <span class="num">1</span> : <span class="num">0</span>;
+    <span class="kw">if</span> (dp[pos][tight?<span class="num">1</span>:<span class="num">0</span>][...] != -<span class="num">1</span>) <span class="kw">return</span> dp[pos][tight?<span class="num">1</span>:<span class="num">0</span>][...];
+    <span class="type">int</span> <span class="var">limit</span> = tight ? (num.<span class="fn">charAt</span>(pos) - <span class="str">'0'</span>) : <span class="num">9</span>;
+    <span class="type">long</span> <span class="var">res</span> = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="type">int</span> d = <span class="num">0</span>; d <= limit; d++)
+        res += <span class="fn">solve</span>(pos+<span class="num">1</span>, tight && d==limit, started||d><span class="num">0</span>, ...);
+    <span class="kw">return</span> dp[pos][tight?<span class="num">1</span>:<span class="num">0</span>][...] = res;
+}`,
+  beginner: "LeetCode 233 – Number of Digit One",
+  intermediate: "CF 1036D – Vasya and Arrays (digit DP counting)",
+  advanced: "CF 1543D – RPG Heroes (digit DP + bitmask state)",
+  mistakes: [
+    "Forgetting 'started' flag (leading zeros create invalid states)",
+    "Wrong tight propagation: tight && d==limit, not just d==limit",
+    "State space overflow: too many state variables"
+  ],
+  similar: "Bitmask DP (when digits encode a set), Simple DP on strings",
+  lc: ["233. Number of Digit One", "357. Count Numbers with Unique Digits", "600. Non-negative Integers without Consecutive Ones", "902. Numbers At Most N Given Digit Set", "1012. Numbers With Repeated Digits"],
+  cf: ["1036D - Vasya and Arrays", "1543D - RPG Heroes", "938E - Max GCD", "908F - New Year and Rainbow Roads", "1228C - Inju Festival"],
+  gfg: ["Count numbers in range with even odd alternating digits", "Count of n-digit numbers with sum of digits = k", "Count of numbers from 1 to n with given digit sum"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 28, level: 3, name: "Segment Tree",
+  cfRange: "1600–2200",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "Range queries (sum/max/min/gcd) with point updates",
+    "Dynamic: elements change, need O(log n) update + query",
+    "Combine two answers: 'merge' function associative",
+    "Lazy propagation when range updates needed"
+  ],
+  coreIdea: "Binary tree over array. Leaf = single element. Internal node = merge of children. Build O(n). Query [l,r]: combine O(log n) nodes. Update: fix leaf + ancestors. Lazy: defer updates via lazy tags.",
+  complexity: "O(n) build, O(log n) update/query",
+  template: `<span class="type">int</span>[] <span class="var">tree</span> = <span class="kw">new</span> <span class="type">int</span>[<span class="num">4</span> * n];
+
+<span class="kw">void</span> <span class="fn">build</span>(<span class="type">int</span> node, <span class="type">int</span> l, <span class="type">int</span> r) {
+    <span class="kw">if</span> (l == r) { tree[node] = a[l]; <span class="kw">return</span>; }
+    <span class="type">int</span> <span class="var">mid</span> = (l + r) / <span class="num">2</span>;
+    <span class="fn">build</span>(<span class="num">2</span>*node, l, mid); <span class="fn">build</span>(<span class="num">2</span>*node+<span class="num">1</span>, mid+<span class="num">1</span>, r);
+    tree[node] = tree[<span class="num">2</span>*node] + tree[<span class="num">2</span>*node+<span class="num">1</span>];
+}
+<span class="type">int</span> <span class="fn">query</span>(<span class="type">int</span> node, <span class="type">int</span> l, <span class="type">int</span> r, <span class="type">int</span> ql, <span class="type">int</span> qr) {
+    <span class="kw">if</span> (ql > r || qr < l) <span class="kw">return</span> <span class="num">0</span>;
+    <span class="kw">if</span> (ql <= l && r <= qr) <span class="kw">return</span> tree[node];
+    <span class="type">int</span> <span class="var">mid</span> = (l + r) / <span class="num">2</span>;
+    <span class="kw">return</span> <span class="fn">query</span>(<span class="num">2</span>*node, l, mid, ql, qr) + <span class="fn">query</span>(<span class="num">2</span>*node+<span class="num">1</span>, mid+<span class="num">1</span>, r, ql, qr);
+}`,
+  beginner: "LeetCode 307 – Range Sum Query - Mutable",
+  intermediate: "CF 380C – Sereja and Brackets",
+  advanced: "CF 1515G – Phoenix and Epoch (seg tree beats / intervals)",
+  mistakes: [
+    "Array size: 4*n not 2*n (4x is safe)",
+    "Wrong merge for max/gcd/min (must be associative)",
+    "Lazy propagation: push down before accessing children"
+  ],
+  similar: "Fenwick Tree (simpler for sum queries), Sparse Table (static range min/max, O(1) query)",
+  lc: ["307. Range Sum Query - Mutable", "315. Count of Smaller Numbers After Self", "218. The Skyline Problem", "732. My Calendar III", "327. Count of Range Sum"],
+  cf: ["380C - Sereja and Brackets", "1515G - Phoenix and Epoch", "1278D - Segment Tree Beats", "1515H - Phoenix and Bits", "1371F - Raging Thunder"],
+  gfg: ["Segment Tree | Sum of given range", "Segment Tree | Range Max Query", "Persistent Segment Tree"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 29, level: 3, name: "Binary Lifting",
+  cfRange: "1600–2100",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "'Find k-th ancestor of node v'",
+    "LCA (Lowest Common Ancestor) queries",
+    "'Count nodes on path u→v'",
+    "Jump k steps in O(log k)"
+  ],
+  coreIdea: "Precompute up[v][j] = 2^j-th ancestor of v. Jump in O(log k) by decomposing k in binary. LCA: lift both nodes to same depth, then lift together until they meet. O(n log n) build, O(log n) query.",
+  complexity: "O(n log n) build, O(log n) per query",
+  template: `<span class="type">int</span>[][] <span class="var">up</span> = <span class="kw">new</span> <span class="type">int</span>[n][LOG]; <span class="comment">// LOG = 20</span>
+<span class="type">int</span>[] <span class="var">depth</span> = <span class="kw">new</span> <span class="type">int</span>[n];
+<span class="comment">// DFS to fill up[v][0] = parent[v], depth[v]</span>
+<span class="kw">for</span> (<span class="type">int</span> j = <span class="num">1</span>; j < LOG; j++)
+    <span class="kw">for</span> (<span class="type">int</span> v = <span class="num">0</span>; v < n; v++)
+        up[v][j] = up[up[v][j-<span class="num">1</span>]][j-<span class="num">1</span>];
+
+<span class="type">int</span> <span class="fn">lca</span>(<span class="type">int</span> u, <span class="type">int</span> v) {
+    <span class="kw">if</span> (depth[u] < depth[v]) { <span class="type">int</span> t = u; u = v; v = t; }
+    <span class="type">int</span> <span class="var">diff</span> = depth[u] - depth[v];
+    <span class="kw">for</span> (<span class="type">int</span> j = <span class="num">0</span>; j < LOG; j++) <span class="kw">if</span> ((diff >> j & <span class="num">1</span>) == <span class="num">1</span>) u = up[u][j];
+    <span class="kw">if</span> (u == v) <span class="kw">return</span> u;
+    <span class="kw">for</span> (<span class="type">int</span> j = LOG-<span class="num">1</span>; j >= <span class="num">0</span>; j--)
+        <span class="kw">if</span> (up[u][j] != up[v][j]) { u = up[u][j]; v = up[v][j]; }
+    <span class="kw">return</span> up[u][<span class="num">0</span>];
+}`,
+  beginner: "LeetCode 1483 – Kth Ancestor of a Tree Node",
+  intermediate: "CF 1527E – Partition into two sets (binary lifting + LCA)",
+  advanced: "CF 1535F – String Paths (binary lifting + hashing on path)",
+  mistakes: [
+    "up[root][j] = root (sentinel for root's parent = itself)",
+    "LOG = 20 sufficient for n ≤ 10^6 (2^20 > 10^6)",
+    "Depth must be computed via DFS/BFS before building table"
+  ],
+  similar: "Euler Tour (for subtree queries), Heavy-Light Decomposition (path queries)",
+  lc: ["1483. Kth Ancestor of a Tree Node", "2846. Minimum Edge Weight Equilibrium Queries in a Tree", "2836. Maximize Value of Function in a Ball Passing Game", "1123. Lowest Common Ancestor of Deepest Leaves", "1026. Maximum Difference Between Node and Ancestor"],
+  cf: ["1527E - Partition into two sets", "1535F - String Paths", "1324F - Maximum White Subtree", "348E - Pilgrims", "1611F - ATM and Students"],
+  gfg: ["Kth ancestor in a tree", "Lowest Common Ancestor", "Binary Lifting for LCA"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 30, level: 3, name: "Mo's Algorithm",
+  cfRange: "1700–2200",
+  tags: ["cf", "icpc", "hidden"],
+  recognition: [
+    "Offline range queries [l..r] on static array",
+    "Adding/removing elements from a multiset in O(1)",
+    "Query order doesn't matter (offline)",
+    "Total moves ≈ O(n√n) if sorted by (block, r)"
+  ],
+  coreIdea: "Sort queries by (l/√n block, r). Maintain current window [curL, curR]. For each query, expand/shrink window. Total pointer moves = O(n√n). Works when add/remove is O(1). Can be extended to trees (Mo on trees).",
+  complexity: "O((n + q)√n)",
+  template: `<span class="type">int</span> <span class="var">BLOCK</span> = (<span class="type">int</span>) Math.<span class="fn">sqrt</span>(n);
+Arrays.<span class="fn">sort</span>(queries, (a, b) ->
+    a[<span class="num">0</span>]/BLOCK != b[<span class="num">0</span>]/BLOCK ? a[<span class="num">0</span>]/BLOCK - b[<span class="num">0</span>]/BLOCK : a[<span class="num">1</span>] - b[<span class="num">1</span>]);
+
+<span class="type">int</span> <span class="var">curL</span> = <span class="num">0</span>, <span class="var">curR</span> = -<span class="num">1</span>;
+<span class="kw">for</span> (<span class="type">int</span>[] <span class="var">q</span> : sortedQueries) {
+    <span class="kw">while</span> (curR < q[<span class="num">1</span>]) <span class="fn">add</span>(++curR);
+    <span class="kw">while</span> (curL > q[<span class="num">0</span>]) <span class="fn">add</span>(--curL);
+    <span class="kw">while</span> (curR > q[<span class="num">1</span>]) <span class="fn">remove</span>(curR--);
+    <span class="kw">while</span> (curL < q[<span class="num">0</span>]) <span class="fn">remove</span>(curL++);
+    ans[q[<span class="num">2</span>]] = currentAnswer;
+}`,
+  beginner: "LeetCode 307 – Range Sum Query - Mutable (range query baseline before offline ordering)",
+  intermediate: "CF 86D – Powerful Array (classic Mo's Algorithm ordering)",
+  advanced: "CF 940F – Machine Learning (Mo with updates = √n blocks for time too)",
+  mistakes: [
+    "Wrong block size (use sqrt(n), not n)",
+    "Not ordering: even blocks ascending r, odd blocks descending r (optimization)",
+    "Mo doesn't work with online queries or when add ≠ remove in complexity"
+  ],
+  similar: "Sqrt decomposition (same idea, different structure), Offline Segment Tree (complex but faster)",
+  lc: ["2916. Subarrays Distinct Element Sum of Squares II", "2009. Minimum Number of Operations to Make Array Continuous", "1521. Find a Value of a Mysterious Function Closest to Target", "2763. Sum of Imbalance Numbers of All Subarrays", "2564. Substring XOR Queries"],
+  cf: ["940F - Machine Learning", "375D - Tree and Queries", "86D - Powerful array", "617E - XOR and Favorite Number", "580E - Kefa and Watch"],
+  gfg: ["Queries on Left and Right Circular Shift in Array", "Sum of all elements in ranges from l to r", "Count of distinct elements in range"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: true
+},
+
+// ======== LEVEL 4 ========
+{
+  id: 31, level: 4, name: "Convex Hull Trick",
+  cfRange: "2000–2500",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "DP recurrence: dp[i] = min over j<i of (m[j]*x[i] + b[j])",
+    "Add linear functions, query minimum/maximum at a point",
+    "Lines with decreasing/increasing slopes → monotone CHT O(n)",
+    "Arbitrary order → Li Chao Tree O(n log n)"
+  ],
+  coreIdea: "Maintain convex hull of lines y=mx+b. For query x, optimal line is on hull. Monotone CHT: add lines with decreasing slopes, query increasing x → O(1) amortized. Lines in arbitrary order → Li Chao Tree.",
+  complexity: "O(n) monotone, O(n log n) Li Chao",
+  template: `<span class="comment">// CHT for min: lines y = m*x + b, query at x</span>
+<span class="type">long</span>[] <span class="var">m</span>, <span class="var">b</span>; <span class="type">int</span> <span class="var">sz</span> = <span class="num">0</span>, <span class="var">ptr</span> = <span class="num">0</span>;
+
+<span class="kw">boolean</span> <span class="fn">bad</span>(<span class="type">int</span> l1, <span class="type">int</span> l2, <span class="type">int</span> l3) {
+    <span class="kw">return</span> (b[l3]-b[l1])*(m[l1]-m[l2]) <= (b[l2]-b[l1])*(m[l1]-m[l3]);
+}
+<span class="kw">void</span> <span class="fn">addLine</span>(<span class="type">long</span> mi, <span class="type">long</span> bi) {
+    m[sz] = mi; b[sz] = bi;
+    <span class="kw">while</span> (sz >= <span class="num">2</span> && <span class="fn">bad</span>(sz-<span class="num">2</span>, sz-<span class="num">1</span>, sz)) sz--;
+    sz++;
+}
+<span class="type">long</span> <span class="fn">query</span>(<span class="type">long</span> x) {
+    <span class="kw">while</span> (ptr < sz-<span class="num">1</span> && m[ptr+<span class="num">1</span>]*x+b[ptr+<span class="num">1</span>] <= m[ptr]*x+b[ptr]) ptr++;
+    <span class="kw">return</span> m[ptr]*x + b[ptr];
+}`,
+  beginner: "CF 319C – Kalila and Dimna in the Logging Industry",
+  intermediate: "CF 1083E – The Fair Nut and Rectangles",
+  advanced: "CF 1603F – Pairwise Modulo (CHT + DP)",
+  mistakes: [
+    "Wrong bad() condition direction (for max vs min)",
+    "Not handling duplicate slopes (skip or handle carefully)",
+    "Monotone CHT only when slopes/queries are monotone"
+  ],
+  similar: "Li Chao Tree (arbitrary order version), Kinetic Segment Tree (dynamic version)",
+  lc: ["1235. Maximum Profit in Job Scheduling (DP, not CHT but similar)", "1340. Jump Game V", "1444. Number of Ways of Cutting a Pizza", "1671. Minimum Number of Removals to Make Mountain Array", "813. Largest Sum of Averages"],
+  cf: ["319C - Kalila and Dimna", "1083E - Fair Nut and Rectangles", "1603F - Pairwise Modulo", "280C - Game on Tree", "660F - Bear and Bowling"],
+  gfg: ["Convex Hull", "Maximum sum rectangle in matrix", "DP Optimization"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 32, level: 4, name: "Suffix Array + LCP",
+  cfRange: "2100–2800",
+  tags: ["cf", "icpc"],
+  recognition: [
+    "Substring queries: longest common substring, distinct substrings",
+    "String comparison problems",
+    "Longest repeated substring",
+    "Count occurrences of pattern in text"
+  ],
+  coreIdea: "SA[i] = starting index of i-th suffix in sorted order. LCP[i] = length of longest common prefix of SA[i] and SA[i-1]. Build in O(n log n) or O(n). Enables O(log n) pattern search, O(n) distinct substrings.",
+  complexity: "O(n log n) build, O(log n) query",
+  template: `<span class="comment">// SA-IS or prefix doubling O(n log n)</span>
+<span class="comment">// Kasai's algorithm for LCP array after building SA</span>
+<span class="type">int</span>[] <span class="fn">kasai</span>(<span class="type">String</span> s, <span class="type">int</span>[] sa) {
+    <span class="type">int</span> <span class="var">n</span> = s.<span class="fn">length</span>();
+    <span class="type">int</span>[] <span class="var">rank</span> = <span class="kw">new</span> <span class="type">int</span>[n], lcp = <span class="kw">new</span> <span class="type">int</span>[n];
+    <span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) rank[sa[i]] = i;
+    <span class="type">int</span> <span class="var">h</span> = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i < n; i++) {
+        <span class="kw">if</span> (rank[i] > <span class="num">0</span>) {
+            <span class="type">int</span> <span class="var">j</span> = sa[rank[i] - <span class="num">1</span>];
+            <span class="kw">while</span> (i+h < n && j+h < n && s.<span class="fn">charAt</span>(i+h) == s.<span class="fn">charAt</span>(j+h)) h++;
+            lcp[rank[i]] = h;
+            <span class="kw">if</span> (h > <span class="num">0</span>) h--;
+        }
+    }
+    <span class="kw">return</span> lcp;
+}`,
+  beginner: "LeetCode 1044 – Longest Duplicate Substring",
+  intermediate: "CF 182D – Common Subsequences (SA + LCP)",
+  advanced: "CF 1063F – String Journey (SA + segment tree on LCP)",
+  mistakes: [
+    "Forgetting to append sentinel character '$' (smallest char) to avoid SA bugs",
+    "LCP[0] is undefined (LCP of first suffix with nothing)",
+    "Confusing SA (sorted suffixes) with suffix automaton (different thing)"
+  ],
+  similar: "Suffix Automaton (alternative—smaller, recognizes all substrings), Z-function (pattern matching only)",
+  lc: ["1044. Longest Duplicate Substring", "1062. Longest Repeating Substring", "1698. Number of Distinct Substrings in a String", "2223. Sum of Scores of Built Strings", "3303. Find the Occurrence of First Almost Equal Substring"],
+  cf: ["182D - Common Subsequences", "1063F - String Journey", "609F - Frogs and Mosquitoes", "1063B - Labyrinth", "700E - Cool Substrings"],
+  gfg: ["Suffix Array", "Longest Common Substring", "Count All Palindromic Substrings"],
+  interview: false, cf_imp: true, icpc_imp: true, hidden: false
+},
+{
+  id: 33, level: 4, name: "Flow Algorithms",
+  cfRange: "2000–2800",
+  tags: ["icpc"],
+  recognition: [
+    "'Maximum flow', 'minimum cut'",
+    "Bipartite matching problems",
+    "Flow = matching problems with capacity",
+    "Min cost max flow for assignment problems"
+  ],
+  coreIdea: "Max-flow: augment flow along s-t paths (Dinic's O(V²E) or even O(E√V) for unit graphs). Min-cut = max-flow (max-flow min-cut theorem). Min-cost flow: find min-cost augmenting paths using SPFA/Dijkstra with potentials.",
+  complexity: "Dinic's: O(V²E), unit: O(E√V)",
+  template: `<span class="comment">// Dinic's algorithm structure</span>
+<span class="type">int</span>[] <span class="var">level</span>, <span class="var">iter</span>;
+<span class="kw">boolean</span> <span class="fn">bfs</span>(<span class="type">int</span> s, <span class="type">int</span> t) { <span class="comment">/* BFS to build level graph */</span> }
+<span class="type">int</span> <span class="fn">dfs</span>(<span class="type">int</span> v, <span class="type">int</span> t, <span class="type">int</span> f) { <span class="comment">/* DFS blocking flow */</span> }
+<span class="type">long</span> <span class="fn">maxflow</span>(<span class="type">int</span> s, <span class="type">int</span> t) {
+    <span class="type">long</span> <span class="var">flow</span> = <span class="num">0</span>;
+    <span class="kw">while</span> (<span class="fn">bfs</span>(s, t)) {
+        Arrays.<span class="fn">fill</span>(iter, <span class="num">0</span>);
+        <span class="type">int</span> <span class="var">f</span>;
+        <span class="kw">while</span> ((f = <span class="fn">dfs</span>(s, t, <span class="type">Integer</span>.MAX_VALUE)) > <span class="num">0</span>) flow += f;
+    }
+    <span class="kw">return</span> flow;
+}`,
+  beginner: "LeetCode 1743 – Restore the Array From Adjacent Pairs (flow modeling)",
+  intermediate: "CF 1473E – Minimum Path (min cost flow)",
+  advanced: "CF 1728F – Fishermen (min cost flow + assignment)",
+  mistakes: [
+    "Wrong reverse edge capacity (for unweighted: rev cap = 0, not 1)",
+    "MCMF: negative cost edges need Bellman-Ford for first SSSP, then Dijkstra with potentials",
+    "Forgetting to add both forward + reverse edges for each actual edge"
+  ],
+  similar: "Bipartite Matching (special case of flow), Hungarian algorithm (MCMF for assignment)",
+  lc: ["1743. Restore the Array From Adjacent Pairs", "2127. Maximum Employees to Be Invited to a Meeting", "1168. Optimize Water Distribution in a Village", "2172. Maximum AND Sum of Array", "1349. Maximum Students Taking Exam"],
+  cf: ["1473E - Minimum Path", "1728F - Fishermen", "704D - Captain America", "704E - Iron Man", "512E - Fox And Cards"],
+  gfg: ["Ford Fulkerson Algorithm", "Bipartite Matching", "Hungarian Algorithm"],
+  interview: false, cf_imp: false, icpc_imp: true, hidden: false
+}
+];
+
+const ROADMAP = [
+  {
+    month: 1, title: "Foundation — Simulate Everything",
+    rating: "800 → 1000",
+    color: "#3fb950",
+    patterns: ["Simulation", "Implementation", "Frequency Map", "Prefix Sum", "Two Pointers", "Sliding Window"],
+    goals: [
+      "Solve 3+ problems daily on Codeforces (Div 2 A, B)",
+      "Complete 30 problems on LeetCode Easy",
+      "Learn Java I/O (BufferedReader) for fast input",
+      "Participate in 4+ Codeforces rounds"
+    ],
+    tips: [
+      "NEVER skip the editorial. Read it, understand it, code from scratch",
+      "Upsolve every problem you couldn't solve in-contest",
+      "Track patterns in a notebook—not just solutions"
+    ]
+  },
+  {
+    month: 2, title: "Mathematical Toolkit",
+    rating: "1000 → 1200",
+    color: "#58a6ff",
+    patterns: ["Greedy Basics", "Binary Search on Answer", "Hashing", "Sorting Tricks", "Bit Manipulation Basics", "Basic Mathematics", "Difference Array", "Coordinate Compression"],
+    goals: [
+      "Solve Div 2 C problems reliably",
+      "Master binary search on answer template",
+      "Implement Sieve, GCD, modular arithmetic from memory",
+      "Participate in Div 3 and try to solve E"
+    ],
+    tips: [
+      "Binary search on answer is the MOST UNDERRATED pattern at 1200–1500",
+      "Learn to identify 'is the answer monotone?' in 30 seconds",
+      "Math problems: check divisibility, GCD structure, parity first"
+    ]
+  },
+  {
+    month: 3, title: "Graph Foundation + Data Structures",
+    rating: "1200 → 1400",
+    color: "#d29922",
+    patterns: ["Graph Traversal (BFS/DFS)", "Topological Sort", "Union Find (DSU)", "Shortest Path", "Prefix XOR", "Frequency of Frequency", "Monotonic Stack"],
+    goals: [
+      "Implement Dijkstra from memory in 15 minutes",
+      "Solve at least one graph problem per day",
+      "Learn 0-1 BFS trick",
+      "Solve 10 DSU problems"
+    ],
+    tips: [
+      "Multi-source BFS is a hidden gem: add all sources with distance 0",
+      "DSU + offline processing is extremely common at 1400-1600",
+      "Monotonic stack: always ask 'what's the next greater element?'"
+    ]
+  },
+  {
+    month: 4, title: "Interval + Range Mastery",
+    rating: "1400 → 1600",
+    color: "#bc8cff",
+    patterns: ["Segment Tree", "Fenwick Tree", "Monotonic Queue", "Sweep Line", "Interval Merging", "Meet in the Middle", "Backtracking", "Modular Arithmetic", "Combinatorics Basics"],
+    goals: [
+      "Implement Segment Tree with lazy propagation",
+      "Solve Div 2 D problems",
+      "Learn nCr mod p with precomputed factorials",
+      "Participate in ICPC-style virtual contests"
+    ],
+    tips: [
+      "Segment tree: the merge function is the KEY. Spend time designing it",
+      "Lazy propagation: model it as 'pending operation on node'",
+      "Combinatorics + modular inverse unlocks counting problems"
+    ]
+  },
+  {
+    month: 5, title: "Tree Algorithms + Advanced DP",
+    rating: "1600 → 1800",
+    color: "#ffa657",
+    patterns: ["Euler Tour", "Binary Lifting", "LIS Patterns", "Tree DP", "Knapsack Variants", "Bitmask DP", "Digit DP", "Sparse Table", "Heavy Light Decomposition"],
+    goals: [
+      "Implement LCA with binary lifting",
+      "Solve at least 5 tree DP problems",
+      "Master LIS in O(n log n)",
+      "Solve Div 1 B or Div 2 E"
+    ],
+    tips: [
+      "Euler tour converts subtree queries to range queries—powerful combo",
+      "Tree DP: always define state as 'dp[v] considering subtree of v'",
+      "Rerooting: first DFS downward, second DFS re-roots"
+    ]
+  },
+  {
+    month: 6, title: "Advanced + Contest Strategy",
+    rating: "1800+",
+    color: "#f85149",
+    patterns: ["Mo's Algorithm", "SCC", "Bridges & Articulation Points", "Convex Hull Trick", "Centroid Decomposition", "Matrix Exponentiation Basics", "Rerooting DP"],
+    goals: [
+      "Participate in Div 1 contests consistently",
+      "Virtual contest every day for 2 weeks",
+      "Review ALL patterns—identify weaknesses",
+      "Target ICPC regional qualification"
+    ],
+    tips: [
+      "At 1800+, problems are about combining multiple patterns correctly",
+      "Speed matters: build a personal template library",
+      "Read 2-3 Codeforces editorials per day even for problems you didn't attempt"
+    ]
+  }
+];
+
+const DEPS = [
+  { pattern: "Prefix Sum", required: [], recommended: ["Simulation", "Implementation"] },
+  { pattern: "Difference Array", required: ["Prefix Sum"], recommended: ["Simulation"] },
+  { pattern: "Two Pointers", required: ["Sorting Tricks"], recommended: ["Prefix Sum"] },
+  { pattern: "Sliding Window", required: ["Two Pointers"], recommended: ["Frequency Map", "Hashing"] },
+  { pattern: "Binary Search on Answer", required: ["Sorting Tricks", "Greedy Basics"], recommended: ["Two Pointers"] },
+  { pattern: "Monotonic Stack", required: ["Sorting Tricks", "Simulation"], recommended: ["Two Pointers"] },
+  { pattern: "Monotonic Queue", required: ["Monotonic Stack", "Sliding Window"], recommended: ["Segment Tree"] },
+  { pattern: "Segment Tree", required: ["Prefix Sum", "Sorting Tricks"], recommended: ["Coordinate Compression"] },
+  { pattern: "Fenwick Tree", required: ["Prefix Sum"], recommended: ["Coordinate Compression", "Sorting Tricks"] },
+  { pattern: "Sweep Line", required: ["Sorting Tricks", "Difference Array"], recommended: ["Segment Tree"] },
+  { pattern: "Graph BFS/DFS", required: ["Simulation", "Queue/Stack"], recommended: ["Hashing"] },
+  { pattern: "Topological Sort", required: ["Graph BFS/DFS"], recommended: ["Union Find"] },
+  { pattern: "Union Find", required: ["Graph BFS/DFS"], recommended: ["Sorting Tricks"] },
+  { pattern: "Shortest Path", required: ["Graph BFS/DFS", "Priority Queue"], recommended: ["Greedy Basics"] },
+  { pattern: "Binary Lifting", required: ["Graph BFS/DFS", "Bit Manipulation Basics"], recommended: ["Sparse Table"] },
+  { pattern: "Euler Tour", required: ["Graph BFS/DFS", "DFS"], recommended: ["Segment Tree", "Fenwick Tree"] },
+  { pattern: "Heavy-Light Decomp", required: ["Binary Lifting", "Euler Tour", "Segment Tree"], recommended: ["LCA"] },
+  { pattern: "Segment Tree Lazy", required: ["Segment Tree"], recommended: ["Difference Array"] },
+  { pattern: "Digit DP", required: ["Basic DP", "Modular Arithmetic"], recommended: ["Bitmask DP"] },
+  { pattern: "Bitmask DP", required: ["Bit Manipulation Basics", "Basic DP"], recommended: ["Meet in Middle"] },
+  { pattern: "Tree DP", required: ["Graph BFS/DFS", "Basic DP"], recommended: ["Binary Lifting"] },
+  { pattern: "Convex Hull Trick", required: ["Basic DP", "Sorting Tricks"], recommended: ["Segment Tree"] },
+  { pattern: "Centroid Decomp", required: ["Graph BFS/DFS", "Divide & Conquer"], recommended: ["Segment Tree", "Hashing"] },
+  { pattern: "Suffix Array", required: ["Sorting Tricks", "Hashing"], recommended: ["Sparse Table"] },
+  { pattern: "Flow Algorithms", required: ["Graph BFS/DFS", "Shortest Path"], recommended: ["Union Find"] },
+  { pattern: "Mo's Algorithm", required: ["Sorting Tricks", "Sqrt Decomp"], recommended: ["Segment Tree"] }
+];
+
+const PRIORITIES = [
+  { pattern: "Prefix Sum", l: 1, frequency: "⭐⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Two Pointers", l: 1, frequency: "⭐⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Sliding Window", l: 1, frequency: "⭐⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Binary Search on Answer", l: 1, frequency: "⭐⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Greedy Basics", l: 1, frequency: "⭐⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Graph BFS/DFS", l: 2, frequency: "⭐⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Segment Tree", l: 3, frequency: "⭐⭐⭐⭐⭐", interview: false, cf: true, icpc: true },
+  { pattern: "Hashing", l: 1, frequency: "⭐⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Union Find (DSU)", l: 2, frequency: "⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Dijkstra / Shortest Path", l: 2, frequency: "⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Monotonic Stack", l: 2, frequency: "⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Binary Lifting / LCA", l: 3, frequency: "⭐⭐⭐⭐", interview: false, cf: true, icpc: true },
+  { pattern: "Tree DP", l: 3, frequency: "⭐⭐⭐⭐", interview: false, cf: true, icpc: true },
+  { pattern: "Topological Sort", l: 2, frequency: "⭐⭐⭐⭐", interview: true, cf: true, icpc: true },
+  { pattern: "Bitmask DP", l: 3, frequency: "⭐⭐⭐", interview: false, cf: true, icpc: true },
+  { pattern: "Convex Hull Trick", l: 4, frequency: "⭐⭐⭐", interview: false, cf: true, icpc: true },
+  { pattern: "Suffix Array", l: 4, frequency: "⭐⭐⭐", interview: false, cf: false, icpc: true },
+  { pattern: "Flow Algorithms", l: 4, frequency: "⭐⭐", interview: false, cf: false, icpc: true },
+  { pattern: "Mo's Algorithm", l: 3, frequency: "⭐⭐⭐", interview: false, cf: true, icpc: true },
+  { pattern: "Digit DP", l: 3, frequency: "⭐⭐⭐", interview: false, cf: true, icpc: true },
+  { pattern: "FFT / NTT", l: 4, frequency: "⭐⭐", interview: false, cf: false, icpc: true },
+  { pattern: "Centroid Decomp", l: 4, frequency: "⭐⭐", interview: false, cf: true, icpc: true },
+  { pattern: "Aho-Corasick", l: 4, frequency: "⭐⭐", interview: false, cf: false, icpc: true }
+];
+
+const HIDDEN_PATTERNS = [
+  {
+    name: "Alien Trick (Lambda Optimization)",
+    cfRange: "2400+",
+    desc: "Converts 'solve with exactly k items' DP to 'solve unconstrained with penalty λ per item'. Binary search on λ. Used when k-constraint makes DP too slow. Also called WQS Binary Search or Aliens Trick (from IOI 2016 Aliens).",
+    when: "DP has O(n²k) complexity, k is the constraint, concavity/convexity in k holds."
+  },
+  {
+    name: "Small-to-Large Merging (DSU on Tree)",
+    cfRange: "1800–2400",
+    desc: "When merging sets on trees: always merge smaller into larger. Each element moves O(log n) times total. Enables O(n log² n) tree queries. Also 'DSU on Tree' = offline technique using DFS order.",
+    when: "'For each node, count distinct values in subtree' type problems."
+  },
+  {
+    name: "Interval DP",
+    cfRange: "1600–2200",
+    desc: "dp[l][r] = answer for substring/subarray [l..r]. Transitions expand from smaller to larger intervals. Classic: Matrix Chain Multiplication, Burst Balloons, Optimal BST.",
+    when: "Problem on contiguous segments where merging two adjacent answers is well-defined."
+  },
+  {
+    name: "Sqrt Decomposition",
+    cfRange: "1700–2200",
+    desc: "Split array into √n blocks. Maintain block-level aggregates. Update = O(√n), query = O(√n). Useful when Segment Tree is overkill or when Mo's Algorithm structure helps.",
+    when: "Range queries with complex updates that can't be lazily composed."
+  },
+  {
+    name: "Virtual Source/Sink (Graph Modeling)",
+    cfRange: "1600–2200",
+    desc: "Add virtual nodes to model complex problems as simple graph problems. Multi-source BFS = virtual source. Min cost matching = virtual sink. The trick is in the modeling, not the algorithm.",
+    when: "Any time you have multiple sources/sinks or want to unify separate components."
+  },
+  {
+    name: "Contribution Technique",
+    cfRange: "1500–2200",
+    desc: "Instead of 'for each query, sum over elements', ask 'for each element, to how many queries does it contribute?'. Converts O(nq) to O(n+q). Very common in sum/count problems.",
+    when: "'Sum over all subarrays of f(subarray)' problems. Each element contributes to (i+1)*(n-i) subarrays."
+  },
+  {
+    name: "Exchange Argument for Greedy Proof",
+    cfRange: "All levels",
+    desc: "Prove greedy is optimal: assume OPT differs from greedy at first position. Show swapping to greedy's choice doesn't make solution worse. If swap improves or maintains: greedy is optimal. Used by Expert+ coders to KNOW when to trust greedy.",
+    when: "Any time you want to try greedy but aren't sure it's correct."
+  },
+  {
+    name: "Parallel Binary Search",
+    cfRange: "2100–2600",
+    desc: "Run multiple binary searches simultaneously on the same monotone function. Reduces O(q log n × check) to O((q + n) log n) when check involves offline queries.",
+    when: "Multiple binary search queries where each check step processes all queries together."
+  }
+];
+
+// ===== EXPANDED PATTERN CATALOG =====
+// Built from the requested pattern list plus additional CP patterns commonly used in CF/ICPC.
+const REQUESTED_PATTERN_SPECS = [
+  {name:"Simulation", level:1, cfRange:"800-1200", category:"implementation", interview:true, cf_imp:true},
+  {name:"Implementation", level:1, cfRange:"800-1400", category:"implementation", interview:true, cf_imp:true},
+  {name:"Frequency Map", level:1, cfRange:"800-1300", category:"hash", interview:true, cf_imp:true},
+  {name:"Frequency of Frequency", level:1, cfRange:"1000-1500", category:"hash", interview:true, cf_imp:true, hidden:true},
+  {name:"Prefix Sum", level:1, cfRange:"800-1400", category:"array", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Difference Array", level:1, cfRange:"1000-1500", category:"array", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Two Pointers", level:1, cfRange:"900-1500", category:"array", interview:true, cf_imp:true},
+  {name:"Sliding Window", level:1, cfRange:"900-1500", category:"array", interview:true, cf_imp:true},
+  {name:"Hashing", level:1, cfRange:"900-1600", category:"hash", interview:true, cf_imp:true},
+  {name:"Sorting Tricks", level:1, cfRange:"800-1500", category:"greedy", interview:true, cf_imp:true},
+  {name:"Greedy Basics", level:1, cfRange:"900-1600", category:"greedy", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Binary Search on Answer", level:1, cfRange:"1200-1700", category:"search", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Coordinate Compression", level:1, cfRange:"1100-1700", category:"array", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Basic Mathematics", level:1, cfRange:"800-1500", category:"math", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Bit Manipulation Basics", level:1, cfRange:"900-1500", category:"bit", interview:true, cf_imp:true},
+  {name:"Monotonic Stack", level:2, cfRange:"1200-1700", category:"array", interview:true, cf_imp:true},
+  {name:"Monotonic Queue", level:2, cfRange:"1400-1800", category:"array", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Sweep Line", level:2, cfRange:"1400-1900", category:"geometry", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Interval Merging", level:2, cfRange:"1200-1600", category:"greedy", interview:true, cf_imp:true},
+  {name:"Prefix XOR", level:2, cfRange:"1200-1700", category:"bit", interview:true, cf_imp:true},
+  {name:"Meet in the Middle", level:2, cfRange:"1500-2100", category:"bit", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Backtracking", level:2, cfRange:"1200-1700", category:"search", interview:true, cf_imp:false, icpc_imp:true},
+  {name:"Recursion Trees", level:2, cfRange:"1200-1700", category:"dp", interview:true, cf_imp:true},
+  {name:"Combinatorics Basics", level:2, cfRange:"1200-1800", category:"math", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Modular Arithmetic", level:2, cfRange:"1200-1900", category:"math", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Graph Traversal (BFS/DFS)", level:2, cfRange:"1200-1700", category:"graph", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Topological Sort", level:2, cfRange:"1300-1800", category:"graph", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Union Find (DSU)", level:2, cfRange:"1300-1900", category:"graph", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Shortest Path Basics", alias:"Shortest Path", level:2, cfRange:"1400-1900", category:"graph", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Matrix Exponentiation Basics", level:2, cfRange:"1500-2000", category:"math", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Digit DP", level:3, cfRange:"1700-2300", category:"dp", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Bitmask DP", level:3, cfRange:"1600-2200", category:"dp", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Tree DP", level:3, cfRange:"1600-2200", category:"tree", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Knapsack Variants", level:3, cfRange:"1500-2100", category:"dp", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"LIS Patterns", level:3, cfRange:"1500-2100", category:"dp", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Rerooting DP", level:3, cfRange:"1800-2400", category:"tree", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Euler Tour", level:3, cfRange:"1600-2100", category:"tree", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Binary Lifting", level:3, cfRange:"1700-2300", category:"tree", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Sparse Table", level:3, cfRange:"1600-2100", category:"range", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Segment Tree", level:3, cfRange:"1600-2300", category:"range", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Lazy Propagation", level:3, cfRange:"1800-2400", category:"range", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Fenwick Tree", level:3, cfRange:"1500-2100", category:"range", interview:true, cf_imp:true, icpc_imp:true},
+  {name:"Mo's Algorithm", level:3, cfRange:"1800-2400", category:"range", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Heavy Light Decomposition", level:3, cfRange:"1900-2500", category:"tree", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"SCC", level:3, cfRange:"1700-2300", category:"graph", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Bridges and Articulation Points", level:3, cfRange:"1700-2300", category:"graph", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Convex Hull Trick", level:4, cfRange:"2000-2600", category:"dpopt", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Li Chao Tree", level:4, cfRange:"2100-2700", category:"dpopt", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Centroid Decomposition", level:4, cfRange:"2100-2700", category:"tree", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Persistent Segment Tree", level:4, cfRange:"2100-2700", category:"range", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Dynamic Programming Optimizations", level:4, cfRange:"2000-2700", category:"dpopt", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"FFT", level:4, cfRange:"2200-2800", category:"math", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"NTT", level:4, cfRange:"2300-2900", category:"math", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Suffix Array", alias:"Suffix Array + LCP", level:4, cfRange:"2000-2600", category:"string", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Suffix Automaton", level:4, cfRange:"2200-2800", category:"string", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"String Hashing Advanced", level:4, cfRange:"1800-2400", category:"string", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Aho-Corasick", level:4, cfRange:"2100-2700", category:"string", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Flow Algorithms", level:4, cfRange:"2000-2800", category:"flow", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Matching Algorithms", level:4, cfRange:"2000-2700", category:"flow", interview:false, cf_imp:true, icpc_imp:true},
+  {name:"Advanced Game Theory", level:4, cfRange:"2000-2700", category:"game", interview:false, cf_imp:true, icpc_imp:true}
+];
+
+const EXTRA_CP_PATTERN_SPECS = [
+  {name:"Contribution Technique", level:2, cfRange:"1300-1900", category:"array", interview:true, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"MEX Patterns", level:2, cfRange:"1200-1900", category:"greedy", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"0-1 BFS", level:2, cfRange:"1500-2000", category:"graph", interview:true, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Constructive Algorithms", level:2, cfRange:"1200-2200", category:"greedy", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Ternary Search", level:2, cfRange:"1500-2100", category:"search", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"KMP / Prefix Function", level:3, cfRange:"1600-2200", category:"string", interview:true, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Z-Function", level:3, cfRange:"1600-2200", category:"string", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Manacher", level:3, cfRange:"1800-2400", category:"string", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Interval DP", level:3, cfRange:"1600-2200", category:"dp", interview:true, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Small-to-Large / DSU on Tree", level:3, cfRange:"1800-2400", category:"tree", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Eulerian Path/Circuit", level:3, cfRange:"1700-2300", category:"graph", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"2-SAT", level:4, cfRange:"2000-2600", category:"graph", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Divide and Conquer DP", level:4, cfRange:"2100-2700", category:"dpopt", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Knuth Optimization", level:4, cfRange:"2200-2800", category:"dpopt", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Parallel Binary Search", level:4, cfRange:"2100-2700", category:"range", interview:false, cf_imp:true, icpc_imp:true, hidden:true},
+  {name:"Aliens Trick / WQS Binary Search", level:4, cfRange:"2400+", category:"dpopt", interview:false, cf_imp:true, icpc_imp:true, hidden:true}
+];
+
+const LEVEL_META = {
+  1: {label: "L1 · Foundations", header: "LEVEL 1 — Foundations"},
+  2: {label: "L2 · Intermediate", header: "LEVEL 2 — Intermediate"},
+  3: {label: "L3 · Advanced", header: "LEVEL 3 — Advanced"},
+  4: {label: "L4 · Expert", header: "LEVEL 4 — Expert"}
+};
+
+const CATEGORY_DEFAULTS = {
+  implementation: {
+    complexity:"Usually O(n) to O(n^2), depending on simulation length",
+    recognition:["Statement gives exact operations to perform","Small or direct constraints allow following rules literally","Most WA risk is parsing, indexing, and state updates"],
+    coreIdea:name=>`Turn the statement for ${name} into small, testable transitions. Keep state explicit, write helper methods, and verify edge cases before optimizing.`,
+    template:`<span class="kw">static void</span> <span class="fn">solve</span>() {
+    <span class="type">int</span> n = fs.nextInt();
+    <span class="kw">for</span> (<span class="type">int</span> step = <span class="num">0</span>; step &lt; n; step++) {
+        <span class="comment">// read/apply exactly one operation</span>
+    }
+}`,
+    pseudo:"Parse input -> maintain current state -> apply each rule exactly once -> output final state.",
+    similar:"Ad hoc needs a clever observation; simulation mostly needs faithful state updates."
+  },
+  array: {
+    complexity:"O(n), O(n log n), or O((n+q) log n) depending on preprocessing",
+    recognition:["Question asks many range/subarray/substring queries","Need count/sum/min/max over moving boundaries","Brute force over all intervals is too slow"],
+    coreIdea:name=>`${name} converts repeated interval work into maintained state. Precompute or move boundaries so each element is processed a small number of times.`,
+    template:`<span class="type">long</span>[] pre = <span class="kw">new</span> <span class="type">long</span>[n + <span class="num">1</span>];
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i &lt; n; i++) pre[i + <span class="num">1</span>] = pre[i] + a[i];
+<span class="kw">long</span> rangeSum(<span class="type">int</span> l, <span class="type">int</span> r) { <span class="kw">return</span> pre[r + <span class="num">1</span>] - pre[l]; }`,
+    pseudo:"Define the maintained quantity -> update it when a boundary changes -> answer each query from maintained state.",
+    similar:"Prefix handles static sums; sliding window handles contiguous constraints; two pointers needs monotonic movement."
+  },
+  hash: {
+    complexity:"Expected O(n), worst-case depends on hashing",
+    recognition:["Need membership, duplicates, counts, or grouping","Order is less important than identity/frequency","Can replace nested search with a map or set"],
+    coreIdea:name=>`${name} stores the information needed to answer membership/count questions instantly. Normalize keys before inserting.`,
+    template:`Map&lt;Integer, Integer&gt; freq = <span class="kw">new</span> HashMap&lt;&gt;();
+<span class="kw">for</span> (<span class="type">int</span> x : a) freq.merge(x, <span class="num">1</span>, Integer::sum);
+<span class="kw">for</span> (Map.Entry&lt;Integer,Integer&gt; e : freq.entrySet()) {
+    <span class="comment">// use value and count</span>
+}`,
+    pseudo:"Choose key -> count or store first occurrence -> query/update map while preserving invariant.",
+    similar:"Sorting also groups equal values, but hashing keeps expected O(1) online updates."
+  },
+  greedy: {
+    complexity:"Usually O(n log n) for sorting plus O(n) scan",
+    recognition:["Need maximize/minimize with local choices","Can sort by deadline, end time, gain, or cost","Exchange argument seems possible"],
+    coreIdea:name=>`${name} chooses locally optimal actions under an invariant. Prove by exchange: replacing the first different optimal choice with greedy does not hurt.`,
+    template:`Arrays.sort(items, (a, b) -&gt; Integer.compare(a.key, b.key));
+<span class="type">long</span> ans = <span class="num">0</span>;
+<span class="kw">for</span> (Item it : items) {
+    <span class="kw">if</span> (canTake(it)) {
+        take(it);
+        ans += it.value;
+    }
+}`,
+    pseudo:"Sort or prioritize candidates -> take the best safe candidate -> maintain feasibility invariant.",
+    similar:"DP explores choices; greedy commits and needs a proof that commitment is irreversible but safe."
+  },
+  search: {
+    complexity:"O(log answer * check complexity)",
+    recognition:["Asked for minimum possible maximum or maximum possible minimum","There is a yes/no feasibility check","If answer x works, larger/smaller answers also work"],
+    coreIdea:name=>`${name} searches over answers, not indices. The hard part is designing a monotonic check function.`,
+    template:`<span class="type">long</span> lo = <span class="num">0</span>, hi = INF;
+<span class="kw">while</span> (lo &lt; hi) {
+    <span class="type">long</span> mid = lo + (hi - lo) / <span class="num">2</span>;
+    <span class="kw">if</span> (ok(mid)) hi = mid;
+    <span class="kw">else</span> lo = mid + <span class="num">1</span>;
+}`,
+    pseudo:"Identify answer range -> prove monotonicity -> binary/ternary search -> implement check carefully.",
+    similar:"Binary search on array needs sorted data; binary search on answer needs monotone feasibility."
+  },
+  math: {
+    complexity:"Usually O(log n), O(n), or O(n log MOD)",
+    recognition:["Divisibility, modulo, combinations, powers, gcd, or recurrence","Numbers are large, so direct simulation over value is impossible","Answer asks modulo 1e9+7 or 998244353"],
+    coreIdea:name=>`${name} reduces the problem to formulas, modular identities, or fast exponentiation. Write equations before coding.`,
+    template:`<span class="type">long</span> modPow(<span class="type">long</span> a, <span class="type">long</span> e, <span class="type">long</span> mod) {
+    <span class="type">long</span> res = <span class="num">1</span>;
+    <span class="kw">while</span> (e &gt; <span class="num">0</span>) {
+        <span class="kw">if</span> ((e &amp; <span class="num">1</span>) == <span class="num">1</span>) res = res * a % mod;
+        a = a * a % mod; e &gt;&gt;= <span class="num">1</span>;
+    }
+    <span class="kw">return</span> res;
+}`,
+    pseudo:"Derive formula -> reduce modulo/gcd/combinatorics -> precompute if many queries -> answer in O(1) or O(log n).",
+    similar:"Math observations often replace DP or simulation with an invariant or closed form."
+  },
+  bit: {
+    complexity:"O(n * bits) or O(2^n * n)",
+    recognition:["Constraints mention n <= 20, masks, subsets, XOR, AND, OR","Need parity or independent bit decisions","Subset enumeration is feasible"],
+    coreIdea:name=>`${name} represents choices as bits. Process each bit independently or iterate masks/submasks efficiently.`,
+    template:`<span class="kw">for</span> (<span class="type">int</span> mask = <span class="num">0</span>; mask &lt; (<span class="num">1</span> &lt;&lt; n); mask++) {
+    <span class="kw">for</span> (<span class="type">int</span> sub = mask; ; sub = (sub - <span class="num">1</span>) &amp; mask) {
+        <span class="comment">// use submask</span>
+        <span class="kw">if</span> (sub == <span class="num">0</span>) <span class="kw">break</span>;
+    }
+}`,
+    pseudo:"Map each choice to a bit -> enumerate masks/submasks -> transition using bit operations.",
+    similar:"Bitmask DP adds optimal substructure; prefix XOR handles parity/counting over prefixes."
+  },
+  graph: {
+    complexity:"Usually O(n+m), O((n+m) log n), or O(n*m) for flow-like checks",
+    recognition:["Entities are nodes and relationships are edges","Need reachability, components, order, shortest path, or constraints","The statement can be modeled as transitions"],
+    coreIdea:name=>`${name} starts with graph modeling. Once nodes and edges are correct, use the standard traversal/ordering/path invariant.`,
+    template:`List&lt;Integer&gt;[] g = <span class="kw">new</span> ArrayList[n];
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i &lt; n; i++) g[i] = <span class="kw">new</span> ArrayList&lt;&gt;();
+<span class="type">boolean</span>[] vis = <span class="kw">new</span> <span class="type">boolean</span>[n];
+<span class="kw">void</span> dfs(<span class="type">int</span> u) { vis[u] = <span class="kw">true</span>; <span class="kw">for</span> (<span class="type">int</span> v : g[u]) <span class="kw">if</span> (!vis[v]) dfs(v); }`,
+    pseudo:"Build graph -> choose traversal/order/path algorithm -> maintain visited/dist/parent -> extract answer.",
+    similar:"DSU handles offline connectivity; BFS/DFS handles explicit traversal; shortest path needs edge weights."
+  },
+  tree: {
+    complexity:"Usually O(n), O(n log n), or O(log n) per query after preprocessing",
+    recognition:["Input has n nodes and n-1 edges","Queries ask subtree/path/LCA/distance","Rooting the tree makes parent-child structure useful"],
+    coreIdea:name=>`${name} exploits the acyclic structure of trees. Root once, compute parent/subtree information, then answer with DFS order or lifting.`,
+    template:`<span class="kw">void</span> dfs(<span class="type">int</span> u, <span class="type">int</span> p) {
+    parent[u] = p; tin[u] = timer++;
+    <span class="kw">for</span> (<span class="type">int</span> v : g[u]) <span class="kw">if</span> (v != p) dfs(v, u);
+    tout[u] = timer - <span class="num">1</span>;
+}`,
+    pseudo:"Root tree -> DFS for parent/subtree/order -> preprocess if needed -> answer path/subtree queries.",
+    similar:"Euler tour converts subtrees to ranges; HLD converts paths to O(log n) ranges; rerooting changes root efficiently."
+  },
+  dp: {
+    complexity:"O(states * transitions), often O(n^2), O(n*k), or O(2^n*n)",
+    recognition:["Need count/min/max over choices with overlapping subproblems","Current answer depends on previous smaller states","Greedy choice is not obviously safe"],
+    coreIdea:name=>`${name} defines the right state and transition. State must contain exactly the information future decisions need.`,
+    template:`Arrays.fill(dp, INF);
+dp[<span class="num">0</span>] = <span class="num">0</span>;
+<span class="kw">for</span> (<span class="type">int</span> state = <span class="num">0</span>; state &lt; states; state++) {
+    <span class="kw">for</span> (Move mv : moves(state)) {
+        dp[next(state, mv)] = Math.min(dp[next(state, mv)], dp[state] + cost(mv));
+    }
+}`,
+    pseudo:"Define state -> initialize base cases -> iterate in dependency order -> transition -> take final state.",
+    similar:"Greedy is faster but needs exchange proof; DP is safer when choices interact."
+  },
+  range: {
+    complexity:"O(log n) update/query after O(n) or O(n log n) build",
+    recognition:["Many point/range updates and range queries","Static prefix sums fail because values change","Need associative operation like sum/min/max/gcd"],
+    coreIdea:name=>`${name} stores aggregate information over blocks or tree nodes, so updates only touch logarithmically many summaries.`,
+    template:`<span class="kw">void</span> update(<span class="type">int</span> idx, <span class="type">long</span> val) {
+    <span class="kw">for</span> (idx++; idx &lt;= n; idx += idx &amp; -idx) bit[idx] += val;
+}
+<span class="type">long</span> sum(<span class="type">int</span> idx) {
+    <span class="type">long</span> res = <span class="num">0</span>;
+    <span class="kw">for</span> (idx++; idx &gt; <span class="num">0</span>; idx -= idx &amp; -idx) res += bit[idx];
+    <span class="kw">return</span> res;
+}`,
+    pseudo:"Choose aggregate -> build structure -> update affected blocks/nodes -> combine query pieces.",
+    similar:"Fenwick is simpler for invertible prefix operations; segment tree is more general; sparse table is static idempotent."
+  },
+  string: {
+    complexity:"Usually O(n), O(n log n), or O(total length * alphabet)",
+    recognition:["Need repeated substring/pattern/palindrome matching","Naive comparing substrings is too slow","Query asks longest common/repeated/matching string"],
+    coreIdea:name=>`${name} preprocesses strings so substring relationships become numeric states, automaton moves, or sorted suffix intervals.`,
+    template:`<span class="type">int</span>[] pi = <span class="kw">new</span> <span class="type">int</span>[s.length()];
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i &lt; s.length(); i++) {
+    <span class="type">int</span> j = pi[i - <span class="num">1</span>];
+    <span class="kw">while</span> (j &gt; <span class="num">0</span> &amp;&amp; s.charAt(i) != s.charAt(j)) j = pi[j - <span class="num">1</span>];
+    <span class="kw">if</span> (s.charAt(i) == s.charAt(j)) j++;
+    pi[i] = j;
+}`,
+    pseudo:"Choose string representation -> preprocess prefix/hash/suffix/automaton -> answer comparisons or matches in O(1)/O(log n).",
+    similar:"Hashing is probabilistic; KMP/Z are exact for one pattern; suffix structures handle many substring queries."
+  },
+  dpopt: {
+    complexity:"Usually improves O(n^2) or O(n^2*k) to O(n log n), O(n), or O(k*n log n)",
+    recognition:["Plain DP is correct but too slow","Transition has line/min/max/quadrangle/monotone structure","Cost function has convexity or monotone argmin"],
+    coreIdea:name=>`${name} keeps the same DP meaning but accelerates the transition using mathematical structure. Prove the optimization precondition before coding.`,
+    template:`<span class="comment">// dp[i] = min_j(dp[j] + m[j] * x[i] + b[j])</span>
+LineContainer cht = <span class="kw">new</span> LineContainer();
+cht.add(m0, b0);
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i &lt; n; i++) {
+    dp[i] = cht.query(x[i]);
+    cht.add(m[i], dp[i] + b[i]);
+}`,
+    pseudo:"Write naive transition -> identify monotonicity/convexity/line form -> maintain optimized candidates -> query best transition.",
+    similar:"CHT optimizes linear transitions; D&C/Knuth optimize monotone split points; Aliens trick removes exact-k dimension."
+  },
+  flow: {
+    complexity:"Depends on algorithm; Dinic is commonly O(E * sqrt(V)) for bipartite matching-like graphs and O(V^2E) worst-case",
+    recognition:["Need assign/match/route limited resources","Each item can be used a bounded number of times","Min-cut or max number of pairings appears"],
+    coreIdea:name=>`${name} models constraints as capacities or matching edges. Correct graph construction matters more than the flow implementation.`,
+    template:`<span class="kw">while</span> (bfsLevelGraph()) {
+    Arrays.fill(ptr, <span class="num">0</span>);
+    <span class="type">long</span> pushed;
+    <span class="kw">while</span> ((pushed = dfs(source, INF)) &gt; <span class="num">0</span>) flow += pushed;
+}`,
+    pseudo:"Create source/sink -> add capacity edges for constraints -> run max flow/matching -> interpret saturated edges.",
+    similar:"DSU handles connectivity; flow handles resource conservation and capacity constraints."
+  },
+  geometry: {
+    complexity:"Usually O(n log n) after sorting events or points",
+    recognition:["Intervals, rectangles, points, segments, or overlap count","Events happen at coordinates","Need active set while scanning one dimension"],
+    coreIdea:name=>`${name} converts geometry/interval relations into sorted events and maintains active objects.`,
+    template:`events.sort((a, b) -&gt; a.x == b.x ? a.type - b.type : a.x - b.x);
+<span class="type">int</span> active = <span class="num">0</span>, best = <span class="num">0</span>;
+<span class="kw">for</span> (Event e : events) {
+    active += e.delta;
+    best = Math.max(best, active);
+}`,
+    pseudo:"Convert objects to events -> sort by coordinate and tie-breaks -> update active set -> record answer.",
+    similar:"Interval merging produces merged ranges; sweep line handles dynamic active sets and intersections."
+  },
+  game: {
+    complexity:"Usually O(states + moves), often with mex over moves",
+    recognition:["Two-player perfect information game","Players alternate and both play optimally","Need winning/losing states or Grundy numbers"],
+    coreIdea:name=>`${name} classifies states by reachable losing states or computes Grundy mex values for impartial games.`,
+    template:`<span class="type">int</span> grundy(<span class="type">int</span> state) {
+    <span class="kw">if</span> (memo[state] != -<span class="num">1</span>) <span class="kw">return</span> memo[state];
+    Set&lt;Integer&gt; seen = <span class="kw">new</span> HashSet&lt;&gt;();
+    <span class="kw">for</span> (<span class="type">int</span> nxt : moves(state)) seen.add(grundy(nxt));
+    <span class="type">int</span> g = <span class="num">0</span>; <span class="kw">while</span> (seen.contains(g)) g++;
+    <span class="kw">return</span> memo[state] = g;
+}`,
+    pseudo:"Define game state -> enumerate legal moves -> terminal state loses -> compute win/lose or Grundy mex.",
+    similar:"DP optimizes scores; game theory reasons about optimal adversarial play."
+  }
+};
+
+const CATEGORY_PROBLEMS = {
+  implementation:{lc:["874. Walking Robot Simulation","54. Spiral Matrix","289. Game of Life","682. Baseball Game","1706. Where Will the Ball Fall"], cf:["1A - Theatre Square","71A - Way Too Long Words","263A - Beautiful Matrix","158B - Taxi","266A - Stones on the Table"], gfg:["Snake and Ladder Problem","Spirally traversing a matrix","Game of Life"]},
+  array:{lc:["303. Range Sum Query","560. Subarray Sum Equals K","209. Minimum Size Subarray Sum","238. Product of Array Except Self","53. Maximum Subarray"], cf:["433B - Kuriyama Mirai's Stones","276C - Little Girl and Maximum Sum","1216B - Shooting","1398C - Good Subarrays","1744C - Traffic Light"], gfg:["Equilibrium Point","Longest Subarray with Sum K","Range Addition"]},
+  hash:{lc:["1. Two Sum","49. Group Anagrams","347. Top K Frequent Elements","560. Subarray Sum Equals K","1224. Maximum Equal Frequency"], cf:["4C - Registration System","977B - Two-gram","1520D - Same Differences","1398C - Good Subarrays","1512G - Short Task"], gfg:["Count Distinct Elements in Every Window","Check if frequencies can be equal","Subarray range with given sum"]},
+  greedy:{lc:["56. Merge Intervals","435. Non-overlapping Intervals","406. Queue Reconstruction","621. Task Scheduler","763. Partition Labels"], cf:["1399B - Gifts Fixing","160A - Twins","1343C - Alternating Subsequence","1472D - Even-Odd Game","545C - Woodcutters"], gfg:["Activity Selection","Job Sequencing","Minimum Platforms"]},
+  search:{lc:["875. Koko Eating Bananas","1011. Capacity To Ship Packages","410. Split Array Largest Sum","69. Sqrt(x)","162. Find Peak Element"], cf:["1201C - Maximum Median","371C - Hamburgers","1251C - Minimize The Integer","474B - Worms","1613C - Poisoned Dagger"], gfg:["Allocate Minimum Pages","Aggressive Cows","Painter's Partition"]},
+  math:{lc:["50. Pow(x,n)","204. Count Primes","372. Super Pow","62. Unique Paths","1922. Count Good Numbers"], cf:["1295D - Same GCDs","1475A - Odd Divisor","1352C - K-th Not Divisible by n","630I - Parking Lot","1114A - Got Any Grapes"], gfg:["Modular Exponentiation","nCr mod M","Sieve of Eratosthenes"]},
+  bit:{lc:["136. Single Number","78. Subsets","137. Single Number II","1442. Count Triplets XOR","1879. Minimum XOR Sum"], cf:["276D - Little Girl and Maximum XOR","467B - Fedor and New Game","550C - Divisibility by Eight","165E - Compatible Numbers","1552D - Array Differentiation"], gfg:["Find XOR of Numbers","Count set bits","Maximum subset XOR"]},
+  graph:{lc:["200. Number of Islands","207. Course Schedule","743. Network Delay Time","785. Is Graph Bipartite?","1192. Critical Connections"], cf:["580C - Kefa and Park","20C - Dijkstra?","510C - Fox And Names","427C - Checkposts","1000E - We Need More Bosses"], gfg:["BFS of Graph","Topological Sort","Dijkstra Algorithm"]},
+  tree:{lc:["236. Lowest Common Ancestor","834. Sum of Distances in Tree","1483. Kth Ancestor","124. Binary Tree Maximum Path Sum","310. Minimum Height Trees"], cf:["208E - Blood Cousins","343G - Balanced Distribution","600E - Lomsat gelral","191C - Fools and Roads","208D - Prizes, Prizes"], gfg:["Lowest Common Ancestor","Euler Tour of Tree","Tree DP"]},
+  dp:{lc:["322. Coin Change","300. Longest Increasing Subsequence","416. Partition Equal Subset Sum","312. Burst Balloons","198. House Robber"], cf:["455A - Boredom","474D - Flowers","577B - Modulo Sum","1114D - Flood Fill","148E - Porcelain"], gfg:["0-1 Knapsack","Longest Increasing Subsequence","Matrix Chain Multiplication"]},
+  range:{lc:["307. Range Sum Query - Mutable","315. Count of Smaller Numbers","218. The Skyline Problem","699. Falling Squares","327. Count of Range Sum"], cf:["339D - Xenia and Bit Operations","380C - Serega and Brackets","86D - Powerful Array","52C - Circular RMQ","220B - Little Elephant and Array"], gfg:["Fenwick Tree","Segment Tree Range Minimum Query","MO's Algorithm"]},
+  string:{lc:["28. Find the Index","214. Shortest Palindrome","1044. Longest Duplicate Substring","336. Palindrome Pairs","1032. Stream of Characters"], cf:["126B - Password","432D - Prefixes and Suffixes","271D - Good Substrings","514C - Watto and Mechanism","1200E - Compress Words"], gfg:["KMP Algorithm","Suffix Array","Aho-Corasick Algorithm"]},
+  dpopt:{lc:["1235. Maximum Profit in Job Scheduling","188. Best Time to Buy/Sell Stock IV","1691. Maximum Height by Stacking Cuboids","887. Super Egg Drop","410. Split Array Largest Sum"], cf:["319C - Kalila and Dimna","868F - Yet Another Minimization Problem","321E - Ciel and Gondolas","311B - Cats Transport","660F - Bear and Bowling 4"], gfg:["Convex Hull Trick","Divide and Conquer DP","Knuth Optimization"]},
+  flow:{lc:["1349. Maximum Students Taking Exam","1820. Maximum Number of Accepted Invitations","1066. Campus Bikes II","1595. Minimum Cost to Connect Two Groups","1947. Maximum Compatibility Score Sum"], cf:["489B - BerSU Ball","101B - Buses","78E - Evacuation","546E - Soldier and Traveling","1007B - Pave the Parallelepiped"], gfg:["Maximum Bipartite Matching","Dinic's Algorithm","Minimum Cost Maximum Flow"]},
+  geometry:{lc:["253. Meeting Rooms II","218. The Skyline Problem","850. Rectangle Area II","391. Perfect Rectangle","149. Max Points on a Line"], cf:["920F - SUM and REPLACE","1029C - Maximal Intersection","1059D - Nature Reserve","1299B - Aerodynamic","101B - Buses"], gfg:["Overlapping Intervals","Line Sweep Algorithm","Convex Hull"]},
+  game:{lc:["292. Nim Game","464. Can I Win","486. Predict the Winner","1140. Stone Game II","1406. Stone Game III"], cf:["1383B - GameGame","1191D - Tokitsukaze, CSL and Stone Game","768D - Jon and Orbs","917B - MADMAX","1537D - Deleting Divisors"], gfg:["Game of Nim","Sprague Grundy Theorem","Game Theory DP"]}
+};
+
+const DEP_OVERRIDES = {
+  "Difference Array":["Prefix Sum"],
+  "Sliding Window":["Two Pointers","Frequency Map"],
+  "Binary Search on Answer":["Basic Mathematics","Greedy Basics"],
+  "Coordinate Compression":["Sorting Tricks"],
+  "Monotonic Stack":["Simulation"],
+  "Monotonic Queue":["Sliding Window"],
+  "Sweep Line":["Sorting Tricks","Coordinate Compression"],
+  "Meet in the Middle":["Bit Manipulation Basics","Backtracking"],
+  "Topological Sort":["Graph Traversal (BFS/DFS)"],
+  "Union Find (DSU)":["Graph Traversal (BFS/DFS)"],
+  "Shortest Path Basics":["Graph Traversal (BFS/DFS)"],
+  "Matrix Exponentiation Basics":["Modular Arithmetic","Basic Mathematics"],
+  "Digit DP":["Recursion Trees","Modular Arithmetic"],
+  "Bitmask DP":["Bit Manipulation Basics","Recursion Trees"],
+  "Tree DP":["Graph Traversal (BFS/DFS)"],
+  "Rerooting DP":["Tree DP"],
+  "Euler Tour":["Graph Traversal (BFS/DFS)"],
+  "Binary Lifting":["Euler Tour"],
+  "Sparse Table":["Prefix Sum"],
+  "Segment Tree":["Recursion Trees"],
+  "Lazy Propagation":["Segment Tree"],
+  "Fenwick Tree":["Prefix Sum","Bit Manipulation Basics"],
+  "Mo's Algorithm":["Sqrt Decomposition","Coordinate Compression"],
+  "Heavy Light Decomposition":["Segment Tree","Binary Lifting","Euler Tour"],
+  "SCC":["Graph Traversal (BFS/DFS)"],
+  "Bridges and Articulation Points":["Graph Traversal (BFS/DFS)"],
+  "Convex Hull Trick":["Dynamic Programming Optimizations","Basic Mathematics"],
+  "Li Chao Tree":["Convex Hull Trick","Segment Tree"],
+  "Centroid Decomposition":["Tree DP","Binary Lifting"],
+  "Persistent Segment Tree":["Segment Tree"],
+  "FFT":["Basic Mathematics","Complex Numbers"],
+  "NTT":["FFT","Modular Arithmetic"],
+  "Suffix Array":["String Hashing Advanced"],
+  "Suffix Automaton":["Suffix Array"],
+  "Aho-Corasick":["KMP / Prefix Function","Trie"],
+  "Flow Algorithms":["Graph Traversal (BFS/DFS)","Shortest Path Basics"],
+  "Matching Algorithms":["Flow Algorithms"],
+  "Advanced Game Theory":["Dynamic Programming"],
+  "0-1 BFS":["Shortest Path Basics"],
+  "Small-to-Large / DSU on Tree":["Tree DP","Frequency Map"],
+  "2-SAT":["SCC"],
+  "Divide and Conquer DP":["Dynamic Programming Optimizations"],
+  "Knuth Optimization":["Dynamic Programming Optimizations"],
+  "Parallel Binary Search":["Binary Search on Answer","Fenwick Tree"],
+  "Aliens Trick / WQS Binary Search":["Binary Search on Answer","Dynamic Programming Optimizations"]
+};
+
+function buildExpandedPatterns() {
+  const existing = new Map(PATTERNS.map(p => [p.name, p]));
+  const specs = REQUESTED_PATTERN_SPECS.concat(EXTRA_CP_PATTERN_SPECS);
+  return specs.map((spec, idx) => {
+    const base = existing.get(spec.alias || spec.name) || {};
+    const cat = CATEGORY_DEFAULTS[spec.category] || CATEGORY_DEFAULTS.implementation;
+    const bank = CATEGORY_PROBLEMS[spec.category] || CATEGORY_PROBLEMS.implementation;
+    const lc = base.lc || bank.lc;
+    const cf = base.cf || bank.cf;
+    const gfg = base.gfg || bank.gfg;
+    const name = spec.name;
+    const pattern = {
+      id: idx + 1,
+      level: spec.level,
+      name,
+      cfRange: spec.cfRange,
+      tags: [
+        spec.interview ? "interview" : "",
+        spec.cf_imp ? "cf" : "",
+        spec.icpc_imp ? "icpc" : "",
+        spec.hidden ? "hidden" : ""
+      ].filter(Boolean),
+      recognition: base.recognition || cat.recognition,
+      coreIdea: base.coreIdea || cat.coreIdea(name),
+      complexity: base.complexity || cat.complexity,
+      template: base.template || cat.template,
+      pseudo: base.pseudo || cat.pseudo,
+      beginner: base.beginner || `LeetCode ${lc[0]} — solve it by identifying the ${name} state/invariant and applying the generic template.`,
+      intermediate: base.intermediate || `CF ${cf[0]} — contest version where constraints force the ${name} pattern instead of brute force.`,
+      advanced: base.advanced || `CF ${cf[1]} — harder version requiring proof, edge-case handling, and optimized implementation.`,
+      mistakes: base.mistakes || [
+        "Using the pattern before proving the required invariant or monotonicity",
+        "Forgetting boundary cases: empty range, one node, duplicate values, or modulo overflow",
+        "Copying a template without adapting index base, tie-break rules, or input constraints"
+      ],
+      similar: base.similar || cat.similar,
+      lc,
+      cf,
+      gfg,
+      interview: !!spec.interview,
+      cf_imp: !!spec.cf_imp,
+      icpc_imp: !!spec.icpc_imp,
+      hidden: !!spec.hidden
+    };
+    pattern.solutions = [
+      `<strong>${lc[0]}</strong>: Recognition - smallest direct problem for ${name}. Solution approach - map input to the maintained state, run the template, and validate with the sample plus one custom edge case.`,
+      `<strong>${cf[0]}</strong>: Recognition - constraints make O(n^2) or naive simulation fail. Solution approach - apply ${name}, maintain its invariant after every update, then prove each element/state is processed within the stated complexity.`
+    ];
+    return pattern;
+  }).sort((a, b) => a.level - b.level || a.id - b.id)
+    .map((pattern, idx) => ({...pattern, id: idx + 1}));
+}
+
+const ALL_PATTERNS = buildExpandedPatterns();
+const ALL_DEPS = ALL_PATTERNS.map(p => ({
+  pattern: p.name,
+  required: DEP_OVERRIDES[p.name] || (p.level === 1 ? [] : p.level === 2 ? ["Level 1 foundations"] : p.level === 3 ? ["Level 1-2 foundations"] : ["Level 1-3 foundations"]),
+  recommended: p.level === 1 ? ["Implementation practice"] : ["Solve 10-20 easier problems before using in contest"]
+}));
+const ALL_PRIORITIES = ALL_PATTERNS.map(p => ({
+  pattern: p.name,
+  l: p.level,
+  frequency: p.cf_imp && p.level <= 2 ? "★★★★★" : p.cf_imp && p.level === 3 ? "★★★★" : p.cf_imp ? "★★★" : "★★",
+  interview: p.interview,
+  cf: p.cf_imp,
+  icpc: p.icpc_imp
+}));
+const ALL_HIDDEN_PATTERNS = HIDDEN_PATTERNS.concat(
+  ALL_PATTERNS.filter(p => p.hidden && !HIDDEN_PATTERNS.some(h => h.name === p.name)).map(p => ({
+    name: p.name,
+    cfRange: p.cfRange,
+    desc: p.coreIdea,
+    when: p.recognition.join(" ")
+  }))
+);
+
+// ===== RENDER FUNCTIONS =====
+
+function renderPatterns(patterns) {
+  const container = document.getElementById('patternsList');
+  const empty = document.getElementById('emptyState');
+  
+  if (patterns.length === 0) {
+    container.innerHTML = '';
+    empty.classList.remove('section-hidden');
+    return;
+  }
+  empty.classList.add('section-hidden');
+  
+  let html = '';
+  let currentLevel = 0;
+  
+  for (const p of patterns) {
+    if (p.level !== currentLevel) {
+      currentLevel = p.level;
+      const levelNames = Object.fromEntries(Object.entries(LEVEL_META).map(([level, meta]) => [level, meta.header]));
+      const levelClass = `level-badge-${currentLevel}`;
+      html += `<div class="level-header">
+        <div class="level-badge ${levelClass}">${levelNames[currentLevel]}</div>
+      </div>`;
+    }
+    
+    const levelTag = `tag-l${p.level}`;
+    const levelLabel = LEVEL_META[p.level].label;
+    
+    html += `<div class="pattern-card" id="card-${p.id}">
+      <div class="card-header" onclick="toggleCard(${p.id})">
+        <span class="pattern-num">#${String(p.id).padStart(2,'0')}</span>
+        <span class="pattern-name">${p.name}</span>
+        <div class="card-meta">
+          <span class="tag ${levelTag}">${levelLabel}</span>
+          <span class="tag">${p.cfRange} CF</span>
+          ${p.interview ? '<span class="tag tag-interview">🎯 Interview</span>' : ''}
+          ${p.cf_imp ? '<span class="tag tag-cf">🔵 CF Must</span>' : ''}
+          ${p.icpc_imp ? '<span class="tag tag-icpc">🏆 ICPC</span>' : ''}
+          ${p.hidden ? '<span class="tag tag-hidden">🔮 Hidden</span>' : ''}
+        </div>
+        <span class="chevron" id="chev-${p.id}">▼</span>
+      </div>
+      <div class="card-body" id="body-${p.id}">
+        <div class="info-grid">
+          <div class="info-block">
+            <div class="info-label"><span class="icon">🔍</span> Recognition Clues</div>
+            <ul class="info-list">${p.recognition.map(r => `<li>${r}</li>`).join('')}</ul>
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">💡</span> Core Idea</div>
+            <div class="info-text">${p.coreIdea}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">⏱</span> Time Complexity</div>
+            <div class="complexity">${p.complexity}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">📊</span> CF Rating Range</div>
+            <div class="cf-range">${p.cfRange}</div>
+          </div>
+          <div class="info-block full">
+            <div class="info-label"><span class="icon">☕</span> Generic Template (Java)</div>
+            <pre class="code-block">${p.template}</pre>
+          </div>
+          <div class="info-block full">
+            <div class="info-label"><span class="icon">🧭</span> Pseudocode / Approach</div>
+            <div class="info-text">${p.pseudo || 'Identify invariant -> apply template -> prove complexity -> test edge cases.'}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">🟢</span> Beginner Example</div>
+            <div class="info-text">${p.beginner}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">🟡</span> Intermediate Example</div>
+            <div class="info-text">${p.intermediate}</div>
+          </div>
+          <div class="info-block full">
+            <div class="info-label"><span class="icon">🔴</span> Advanced Example</div>
+            <div class="info-text">${p.advanced}</div>
+          </div>
+          <div class="info-block full">
+            <div class="info-label"><span class="icon">🛠</span> Two Example Problems with Solution Approach</div>
+            ${(p.solutions || []).map(s => `<div class="problem-link">• ${s}</div>`).join('')}
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">⚠️</span> Common Mistakes</div>
+            <ul class="info-list">${p.mistakes.map(m => `<li class="mistake">${m}</li>`).join('')}</ul>
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">🔗</span> Similar Patterns & Differences</div>
+            <div class="info-text">${p.similar}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">🟠</span> Top 5 LeetCode Problems</div>
+            ${p.lc.map(lc => `<div class="problem-link">• ${lc}</div>`).join('')}
+          </div>
+          <div class="info-block">
+            <div class="info-label"><span class="icon">🔵</span> Top 5 Codeforces Problems</div>
+            ${p.cf.map(cf => `<div class="problem-link">• ${cf}</div>`).join('')}
+          </div>
+          <div class="info-block full">
+            <div class="info-label"><span class="icon">📗</span> Top 3 GFG Problems</div>
+            ${p.gfg.map(g => `<div class="problem-link">• ${g}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+  
+  container.innerHTML = html;
+}
+
+function renderSidebar(patterns) {
+  const list = document.getElementById('sidebarList');
+  const dotColors = {1: '#3fb950', 2: '#58a6ff', 3: '#bc8cff', 4: '#f85149'};
+  list.innerHTML = patterns.map(p => `
+    <div class="sidebar-item" onclick="scrollToCard(${p.id})" id="side-${p.id}">
+      <div class="sidebar-dot" style="background:${dotColors[p.level]}"></div>
+      ${p.name}
+    </div>`).join('');
+}
+
+function renderRoadmap() {
+  const container = document.getElementById('roadmapContent');
+  const monthColors = ['#3fb950','#58a6ff','#d29922','#bc8cff','#ffa657','#f85149'];
+  container.innerHTML = ROADMAP.map((m, idx) => `
+    <div class="month-card">
+      <div class="month-header">
+        <div class="month-num" style="background:${monthColors[idx]}22;color:${monthColors[idx]};border:2px solid ${monthColors[idx]}">${m.month}</div>
+        <div>
+          <div style="font-size:16px;font-weight:800">${m.title}</div>
+          <div style="color:${monthColors[idx]};font-size:13px;font-weight:700;font-family:monospace">${m.rating}</div>
+        </div>
+      </div>
+      <div class="month-body">
+        <div class="sidebar-title">Patterns to Master</div>
+        <div class="month-grid">${m.patterns.map(p => `<div class="pattern-pill" style="border-color:${monthColors[idx]}44;color:${monthColors[idx]}">${p}</div>`).join('')}</div>
+        <div class="goal-box">
+          <div class="goal-title">🎯 Goals</div>
+          ${m.goals.map(g => `<div style="font-size:13px;padding:3px 0;color:#e6edf3">• ${g}</div>`).join('')}
+        </div>
+        <div class="tip-box">
+          <div class="tip-title">💡 Expert Tips</div>
+          ${m.tips.map(t => `<div style="font-size:13px;padding:3px 0;color:#e6edf3">→ ${t}</div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderDeps() {
+  const container = document.getElementById('depsContent');
+  container.innerHTML = `<table class="dep-table">
+    <thead><tr><th>Pattern</th><th>Required Prerequisites</th><th>Recommended</th></tr></thead>
+    <tbody>${ALL_DEPS.map(d => `
+      <tr>
+        <td style="font-weight:700;color:#e6edf3">${d.pattern}</td>
+        <td>${d.required.length ? d.required.map(r => `<span class="dep-tag required">${r}</span>`).join(' ') : '<span style="color:#8b949e">None</span>'}</td>
+        <td>${d.recommended.length ? d.recommended.map(r => `<span class="dep-tag recommended">${r}</span>`).join(' ') : '<span style="color:#8b949e">—</span>'}</td>
+      </tr>`).join('')}</tbody></table>`;
+  
+  const priority = document.getElementById('priorityContent');
+  priority.innerHTML = `<table class="priority-table">
+    <thead><tr><th>Pattern</th><th>Level</th><th>CF Frequency</th><th>🎯 Interview</th><th>🔵 Codeforces</th><th>🏆 ICPC</th></tr></thead>
+    <tbody>${ALL_PRIORITIES.map(p => `
+      <tr>
+        <td style="font-weight:600">${p.pattern}</td>
+        <td><span class="tag tag-l${p.l}">L${p.l}</span></td>
+        <td>${p.frequency}</td>
+        <td class="${p.interview?'dot-yes':'dot-no'}">${p.interview?'●':'○'}</td>
+        <td class="${p.cf?'dot-yes':'dot-no'}">${p.cf?'●':'○'}</td>
+        <td class="${p.icpc?'dot-yes':'dot-no'}">${p.icpc?'●':'○'}</td>
+      </tr>`).join('')}</tbody></table>`;
+  
+  const hidden = document.getElementById('hiddenContent');
+  hidden.innerHTML = ALL_HIDDEN_PATTERNS.map(h => `
+    <div style="background:var(--surface2);border-radius:8px;padding:14px;margin-bottom:12px;border:1px solid rgba(255,166,87,.2)">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <span style="font-weight:700;font-size:15px;color:#ffa657">${h.name}</span>
+        <span style="font-family:monospace;font-size:12px;color:#d29922;background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3);padding:2px 8px;border-radius:4px">${h.cfRange}</span>
+      </div>
+      <div style="font-size:13px;color:#e6edf3;margin-bottom:6px">${h.desc}</div>
+      <div style="font-size:12px;color:#8b949e"><strong style="color:#ffa657">When to use:</strong> ${h.when}</div>
+    </div>`).join('');
+}
+
+// ===== INTERACTION =====
+let activeTab = 'all';
+let activeLevel = 0;
+
+function switchTab(level) {
+  document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-level="${level}"]`).classList.add('active');
+  
+  activeTab = level;
+  document.getElementById('patternsView').classList.add('section-hidden');
+  document.getElementById('roadmapView').classList.add('section-hidden');
+  document.getElementById('depsView').classList.add('section-hidden');
+  document.getElementById('sidebar').style.display = 'block';
+  
+  if (level === 'roadmap') {
+    document.getElementById('roadmapView').classList.remove('section-hidden');
+    document.getElementById('sidebar').style.display = 'none';
+  } else if (level === 'deps') {
+    document.getElementById('depsView').classList.remove('section-hidden');
+    document.getElementById('sidebar').style.display = 'none';
+  } else {
+    document.getElementById('patternsView').classList.remove('section-hidden');
+    filterPatterns();
+  }
+}
+
+function filterPatterns() {
+  const search = document.getElementById('searchBox').value.toLowerCase();
+  const filter = document.getElementById('filterSelect').value;
+  const tab = activeTab;
+  
+  let filtered = ALL_PATTERNS.filter(p => {
+    const levelMatch = tab === 'all' || p.level === parseInt(tab);
+    const filterMatch = filter === 'all' ||
+      (filter === 'interview' && p.interview) ||
+      (filter === 'cf' && p.cf_imp) ||
+      (filter === 'icpc' && p.icpc_imp) ||
+      (filter === 'hidden' && p.hidden);
+    const searchMatch = !search ||
+      p.name.toLowerCase().includes(search) ||
+      p.coreIdea.toLowerCase().includes(search) ||
+      p.recognition.some(r => r.toLowerCase().includes(search)) ||
+      (p.pseudo || '').toLowerCase().includes(search) ||
+      p.lc.concat(p.cf, p.gfg).some(problem => problem.toLowerCase().includes(search)) ||
+      p.cfRange.toLowerCase().includes(search);
+    return levelMatch && filterMatch && searchMatch;
+  });
+  
+  renderPatterns(filtered);
+  renderSidebar(filtered);
+}
+
+function toggleCard(id) {
+  const body = document.getElementById(`body-${id}`);
+  const chev = document.getElementById(`chev-${id}`);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+function expandAll() {
+  document.querySelectorAll('.card-body').forEach(b => b.classList.add('open'));
+  document.querySelectorAll('.chevron').forEach(c => c.classList.add('open'));
+}
+
+function collapseAll() {
+  document.querySelectorAll('.card-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.chevron').forEach(c => c.classList.remove('open'));
+}
+
+function scrollToCard(id) {
+  const card = document.getElementById(`card-${id}`);
+  if (card) {
+    card.scrollIntoView({behavior: 'smooth', block: 'start'});
+    toggleCard(id);
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+    document.getElementById(`side-${id}`)?.classList.add('active');
+  }
+}
+
+// INIT
+renderPatterns(ALL_PATTERNS);
+renderSidebar(ALL_PATTERNS);
+renderRoadmap();
+renderDeps();
+</script>
+</body>
+</html>
